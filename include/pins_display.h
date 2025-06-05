@@ -3,6 +3,7 @@
 #ifndef PINS_DISPLAY_H
 #define PINS_DISPLAY_H
 
+//WRONG
 // --- Display Pinout (from 40-pin datasheet 0620A003-G1I0400) ---
 // Pin | Signal
 // ----|--------------------
@@ -46,6 +47,7 @@
 // 38  | VGL
 // 39  | VCOM
 // 40  | GND
+//WRONG
 
 // --- ESP32-S3 to Display FPC Pin Mapping (Derived from Visual Inspection) ---
 // IMPORTANT: This mapping is derived from visual inspection of PCB traces.
@@ -53,30 +55,53 @@
 //            is highly recommended for 100% accuracy.
 
 // Data Pins (16-bit parallel interface)
-#define LCD_D0   21 // FPC Pin 5  (ESP32-S3 GPIO21)
-#define LCD_D1   20 // FPC Pin 6  (ESP32-S3 GPIO20)
-#define LCD_D2   19 // FPC Pin 7  (ESP32-S3 GPIO19)
-#define LCD_D3   18 // FPC Pin 8  (ESP32-S3 GPIO18)
-#define LCD_D4   17 // FPC Pin 9  (ESP32-S3 GPIO17)
-#define LCD_D5   16 // FPC Pin 10 (ESP32-S3 GPIO16)
-#define LCD_D6   15 // FPC Pin 11 (ESP32-S3 GPIO15)
-#define LCD_D7   14 // FPC Pin 12 (ESP32-S3 GPIO14)
-#define LCD_D8   13 // FPC Pin 13 (ESP32-S3 GPIO13)
-#define LCD_D9   12 // FPC Pin 14 (ESP32-S3 GPIO12)
-#define LCD_D10  11 // FPC Pin 15 (ESP32-S3 GPIO11)
-#define LCD_D11  10 // FPC Pin 16 (ESP32-S3 GPIO10)
-#define LCD_D12  9  // FPC Pin 17 (ESP32-S3 GPIO9)
-#define LCD_D13  8  // FPC Pin 18 (ESP32-S3 GPIO8)
-#define LCD_D14  7  // FPC Pin 19 (ESP32-S3 GPIO7)
-#define LCD_D15  6  // FPC Pin 20 (ESP32-S3 GPIO6)
+// #define LCD_D0   21 // FPC Pin 5  (ESP32-S3 GPIO21)
+// #define LCD_D1   20 // FPC Pin 6  (ESP32-S3 GPIO20)
+// #define LCD_D2   19 // FPC Pin 7  (ESP32-S3 GPIO19)
+// #define LCD_D3   18 // FPC Pin 8  (ESP32-S3 GPIO18)
+// #define LCD_D4   17 // FPC Pin 9  (ESP32-S3 GPIO17)
+// #define LCD_D5   16 // FPC Pin 10 (ESP32-S3 GPIO16)
+// #define LCD_D6   15 // FPC Pin 11 (ESP32-S3 GPIO15)
+// #define LCD_D7   14 // FPC Pin 12 (ESP32-S3 GPIO14)
+// #define LCD_D8   13 // FPC Pin 13 (ESP32-S3 GPIO13)
+// #define LCD_D9   12 // FPC Pin 14 (ESP32-S3 GPIO12)
+// #define LCD_D10  11 // FPC Pin 15 (ESP32-S3 GPIO11)
+// #define LCD_D11  10 // FPC Pin 16 (ESP32-S3 GPIO10)
+// #define LCD_D12  9  // FPC Pin 17 (ESP32-S3 GPIO9)
+// #define LCD_D13  8  // FPC Pin 18 (ESP32-S3 GPIO8)
+// #define LCD_D14  7  // FPC Pin 19 (ESP32-S3 GPIO7)
+// #define LCD_D15  6  // FPC Pin 20 (ESP32-S3 GPIO6)
 
-// Control Pins
-#define LCD_VSYNC 5  // FPC Pin 22 (ESP32-S3 GPIO5)
-#define LCD_HSYNC 4  // FPC Pin 23 (ESP32-S3 GPIO4)
-#define LCD_DEN   3  // FPC Pin 24 (ESP32-S3 GPIO3)
-#define LCD_PCLK  2  // FPC Pin 25 (ESP32-S3 GPIO2) (Pixel Clock)
-#define LCD_RESET 1  // FPC Pin 27 (ESP32-S3 GPIO1)
-#define LCD_CS    0  // FPC Pin 28 (ESP32-S3 GPIO0) (Chip Select for display controller)
+//Red?
+#define LCD_D0  1  // FPC Pin 33 (ESP32-S3 GPIO1 - pin 6) Red 1
+#define LCD_D1  2  // FPC Pin 32 (ESP32-S3 GPIO2 - pin 7) Red 2
+#define LCD_D2  3  // FPC Pin 31 (ESP32-S3 GPIO3 - pin 8) Red 3
+#define LCD_D3  4  // FPC Pin 30 (ESP32-S3 GPIO4 - pin 9) Red 4
+#define LCD_D4  5  // FPC Pin 29 (ESP32-S3 GPIO5 - pin 10) Red 5
+
+// Green?
+#define LCD_D5  6  // FPC Pin 26 (ESP32-S3 GPIO6 - pin 11) Green 1
+#define LCD_D6  7  // FPC Pin 25 (ESP32-S3 GPIO7 - pin 12) Green 2
+#define LCD_D7  8  // FPC Pin 24 (ESP32-S3 GPIO8 - pin 13) Green 3
+#define LCD_D8  9  // FPC Pin 23 (ESP32-S3 GPIO9 - pin 14) Green 4
+#define LCD_D9  10 // FPC Pin 22 (ESP32-S3 GPIO10 - pin 15) Green 5
+#define LCD_D10 11 // FPC Pin 21 (ESP32-S3 GPIO11 - pin 16) Green 6
+
+// Blue?
+#define LCD_D11 12 // FPC Pin 17 (ESP32-S3 GPIO12 - pin 17) Blue 1
+#define LCD_D12 13 // FPC Pin 16 (ESP32-S3 GPIO13 - pin 18) Blue 2
+#define LCD_D13 14 // FPC Pin 15 (ESP32-S3 GPIO14 - pin 19) Blue 3
+#define LCD_D14 15 // FPC Pin 14 (ESP32-S3 GPIO15 - pin 21) Blue 4
+#define LCD_D15 16 // FPC Pin 13 (ESP32-S3 GPIO16 - pin 22) Blue 5
+
+
+// // Control Pins
+// #define LCD_VSYNC 5  // FPC Pin 22 (ESP32-S3 GPIO5)
+// #define LCD_HSYNC 4  // FPC Pin 23 (ESP32-S3 GPIO4)
+// #define LCD_DEN   3  // FPC Pin 24 (ESP32-S3 GPIO3)
+// #define LCD_PCLK  2  // FPC Pin 25 (ESP32-S3 GPIO2) (Pixel Clock)
+// #define LCD_RESET 1  // FPC Pin 27 (ESP32-S3 GPIO1)
+// #define LCD_CS    0  // FPC Pin 28 (ESP32-S3 GPIO0) (Chip Select for display controller)
 
 // --- Uncertainties / Pins that require verification ---
 // The following pins could not be clearly traced due to obstructions or complex routing.
@@ -85,6 +110,9 @@
 // #define LCD_DC    ?  // FPC Pin 29 (Data/Command for display controller)
 // #define LCD_SCL   ?  // FPC Pin 30 (Serial Clock for display controller, e.g., I2C/SPI)
 // #define LCD_SDA   ?  // FPC Pin 31 (Serial Data for display controller, e.g., I2C/SPI)
+
+
+
 // #define LCD_RD    ?  // FPC Pin 32 (Read Strobe - often not used in write-only setups)
 // #define LCD_WR    ?  // FPC Pin 33 (Write Strobe - often not used in write-only setups)
 
