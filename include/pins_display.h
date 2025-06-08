@@ -2,123 +2,103 @@
 
 #ifndef PINS_DISPLAY_H
 #define PINS_DISPLAY_H
+#include <Arduino.h>
 
-//WRONG
-// --- Display Pinout (from 40-pin datasheet 0620A003-G1I0400) ---
-// Pin | Signal
-// ----|--------------------
-// 1   | GND
-// 2   | LEDK
-// 3   | LEDA
-// 4   | VCC
-// 5   | D0
-// 6   | D1
-// 7   | D2
-// 8   | D3
-// 9   | D4
-// 10  | D5
-// 11  | D6
-// 12  | D7
-// 13  | D8
-// 14  | D9
-// 15  | D10
-// 16  | D11
-// 17  | D12
-// 18  | D13
-// 19  | D14
-// 20  | D15
-// 21  | GND
-// 22  | DVSYNC
-// 23  | DHSYNC
-// 24  | DEN
-// 25  | DCLK
-// 26  | GND
-// 27  | RESET
-// 28  | CS
-// 29  | DC
-// 30  | SCL
-// 31  | SDA
-// 32  | /RD
-// 33  | /WR
-// 34  | NC
-// 35  | NC
-// 36  | GND
-// 37  | VGH
-// 38  | VGL
-// 39  | VCOM
-// 40  | GND
-//WRONG
+// --- Display Pinout (from 40-pin datasheet 0620A003-G1I0400.pdf - TOP to BOTTOM FPC Pin 1-40) ---
+// Und ESP32-S3 zu Display FPC Pin Mapping (DIREKT AUS DER VOM BENUTZER BEREITGESTELLTEN TRACE image_144d54.jpg) ---
+// WICHTIG: Diese Zuordnung wurde direkt aus den farbcodierten Leiterbahnen und Pin-Bezeichnungen
+//          im Bild "image_144d54.jpg" abgeleitet.
+//          Sie geht von einer 16-Bit parallelen RGB (RGB565) Schnittstelle aus, da R0-R2, G0-G1, B0-B2 auf Masse liegen.
+//          FPC Pin 35 (NC) und FPC Pin 37 (SDD) sind in dieser spezifischen Schaltung ebenfalls auf Masse gezogen.
+//          Schwarze Leiterbahnen zeigen Masse (GND) an.
 
-// --- ESP32-S3 to Display FPC Pin Mapping (Derived from Visual Inspection) ---
-// IMPORTANT: This mapping is derived from visual inspection of PCB traces.
-//            A physical multimeter continuity check or the official schematic
-//            is highly recommended for 100% accuracy.
-
-// Data Pins (16-bit parallel interface)
-// #define LCD_D0   21 // FPC Pin 5  (ESP32-S3 GPIO21)
-// #define LCD_D1   20 // FPC Pin 6  (ESP32-S3 GPIO20)
-// #define LCD_D2   19 // FPC Pin 7  (ESP32-S3 GPIO19)
-// #define LCD_D3   18 // FPC Pin 8  (ESP32-S3 GPIO18)
-// #define LCD_D4   17 // FPC Pin 9  (ESP32-S3 GPIO17)
-// #define LCD_D5   16 // FPC Pin 10 (ESP32-S3 GPIO16)
-// #define LCD_D6   15 // FPC Pin 11 (ESP32-S3 GPIO15)
-// #define LCD_D7   14 // FPC Pin 12 (ESP32-S3 GPIO14)
-// #define LCD_D8   13 // FPC Pin 13 (ESP32-S3 GPIO13)
-// #define LCD_D9   12 // FPC Pin 14 (ESP32-S3 GPIO12)
-// #define LCD_D10  11 // FPC Pin 15 (ESP32-S3 GPIO11)
-// #define LCD_D11  10 // FPC Pin 16 (ESP32-S3 GPIO10)
-// #define LCD_D12  9  // FPC Pin 17 (ESP32-S3 GPIO9)
-// #define LCD_D13  8  // FPC Pin 18 (ESP32-S3 GPIO8)
-// #define LCD_D14  7  // FPC Pin 19 (ESP32-S3 GPIO7)
-// #define LCD_D15  6  // FPC Pin 20 (ESP32-S3 GPIO6)
-
-//Red?
-#define LCD_D0  1  // FPC Pin 33 (ESP32-S3 GPIO1 - pin 6) Red 1
-#define LCD_D1  2  // FPC Pin 32 (ESP32-S3 GPIO2 - pin 7) Red 2
-#define LCD_D2  3  // FPC Pin 31 (ESP32-S3 GPIO3 - pin 8) Red 3
-#define LCD_D3  4  // FPC Pin 30 (ESP32-S3 GPIO4 - pin 9) Red 4
-#define LCD_D4  5  // FPC Pin 29 (ESP32-S3 GPIO5 - pin 10) Red 5
-
-// Green?
-#define LCD_D5  6  // FPC Pin 26 (ESP32-S3 GPIO6 - pin 11) Green 1
-#define LCD_D6  7  // FPC Pin 25 (ESP32-S3 GPIO7 - pin 12) Green 2
-#define LCD_D7  8  // FPC Pin 24 (ESP32-S3 GPIO8 - pin 13) Green 3
-#define LCD_D8  9  // FPC Pin 23 (ESP32-S3 GPIO9 - pin 14) Green 4
-#define LCD_D9  10 // FPC Pin 22 (ESP32-S3 GPIO10 - pin 15) Green 5
-#define LCD_D10 11 // FPC Pin 21 (ESP32-S3 GPIO11 - pin 16) Green 6
-
-// Blue?
-#define LCD_D11 12 // FPC Pin 17 (ESP32-S3 GPIO12 - pin 17) Blue 1
-#define LCD_D12 13 // FPC Pin 16 (ESP32-S3 GPIO13 - pin 18) Blue 2
-#define LCD_D13 14 // FPC Pin 15 (ESP32-S3 GPIO14 - pin 19) Blue 3
-#define LCD_D14 15 // FPC Pin 14 (ESP32-S3 GPIO15 - pin 21) Blue 4
-#define LCD_D15 16 // FPC Pin 13 (ESP32-S3 GPIO16 - pin 22) Blue 5
+// FPC Pinbelegungsreferenz (von OBEN nach UNTEN am linken Rand des Steckers in image_144d54.jpg):
+// FPC Pin | Signal (aus PDF) | Leiterbahnfarbe (image_144d54.jpg) | ESP32-S3 GPIO Pin (aus image_144d54.jpg) | Abgeleitetes Signal (RGB565) / Anmerkungen
+// --------|-------------------|------------------------------------|-------------------------------------------|-----------------------------------------------------
+// 1       | LEDK              | Keine sichtbare Leiterbahn         | -                                         | LED Kathode (Hintergrundbeleuchtung)
+// 2       | LEDA              | Keine sichtbare Leiterbahn         | -                                         | LED Anode (Hintergrundbeleuchtung)
+// 3       | GND               | Schwarz                            | -                                         | Masse (Ground)
+// 4       | VCC               | Blau                               | (ESP32 Seite VCC)                         | Display-Stromversorgung (verbunden mit 3.3V Schiene)
+// 5       | R0                | Auf GND gezogen (Benutzerinfo)     | -                                         | Rote Daten 0 (auf GND für RGB565)
+// 6       | R1                | Auf GND gezogen (Benutzerinfo)     | -                                         | Rote Daten 1 (auf GND für RGB565)
+// 7       | R2                | Auf GND gezogen (Benutzerinfo)     | -                                         | Rote Daten 2 (auf GND für RGB565)
+// 8       | R3                | Orange                             | GPIO0                                     | LCD_R0 (Rotes LSB für RGB565)
+// 9       | R4                | Orange                             | GPIO1                                     | LCD_R1
+// 10      | R5                | Orange                             | GPIO2                                     | LCD_R2
+// 11      | R6                | Orange                             | GPIO3                                     | LCD_R3
+// 12      | R7                | Orange                             | GPIO4                                     | LCD_R4 (Rotes MSB für RGB565)
+// 13      | G0                | Auf GND gezogen (Benutzerinfo)     | -                                         | Grüne Daten 0 (auf GND für RGB565)
+// 14      | G1                | Auf GND gezogen (Benutzerinfo)     | -                                         | Grüne Daten 1 (auf GND für RGB565)
+// 15      | G2                | Grün                               | 6                                         | LCD_G0 (Grünes LSB für RGB565)
+// 16      | G3                | Grün                               | 7                                         | LCD_G1
+// 17      | G4                | Grün                               | 8                                         | LCD_G2
+// 18      | G5                | Grün                               | 9                                         | LCD_G3
+// 19      | G6                | Grün                               | 10                                        | LCD_G4
+// 20      | G7                | Grün                               | 11                                        | LCD_G5 (Grünes MSB für RGB565)
+// 21      | B0                | Auf GND gezogen (Benutzerinfo)     | -                                         | Blaue Daten 0 (auf GND für RGB565)
+// 22      | B1                | Auf GND gezogen (Benutzerinfo)     | -                                         | Blaue Daten 1 (auf GND für RGB565)
+// 23      | B2                | Auf GND gezogen (Benutzerinfo)     | -                                         | Blaue Daten 2 (auf GND für RGB565)
+// 24      | B3                | Hellblau                           | 12                                        | LCD_B0 (Blaues LSB für RGB565)
+// 25      | B4                | Hellblau                           | 13                                        | LCD_B1
+// 26      | B5                | Hellblau                           | 14                                        | LCD_B2
+// 27      | B6                | Hellblau                           | 15                                        | LCD_B3
+// 28      | B7                | Hellblau                           | 16                                        | LCD_B4 (Blaues MSB für RGB565)
+// 29      | GND               | Schwarz                            | -                                         | Masse (Ground)
+// 30      | CLK               | Hellblau                           | 38                                        | LCD_PCLK (Pixel Takt)
+// 31      | RESET             | Lila                               | 39                                        | LCD_RESET (Display Reset)
+// 32      | Hsync             | Blau                               | 40                                        | LCD_HSYNC (Horizontale Synchronisation)
+// 33      | Vsync             | Blau                               | 41                                        | LCD_VSYNC (Vertikale Synchronisation)
+// 34      | DE                | Blau                               | 42                                        | LCD_DEN (Data Enable)
+// 35      | NC                | Auf GND gezogen (Benutzerinfo)     | -                                         | Nicht verbunden (auf Masse gezogen)
+// 36      | GND               | Schwarz                            | -                                         | Masse (Ground)
+// 37      | SDD               | Auf GND gezogen (Benutzerinfo)     | -                                         | Serielle Dateneingabe (auf Masse gezogen) - Wahrscheinlich für SPI/I2C Konfiguration des Display-ICs, aber hier nicht verwendet.
+// 38      | CS                | Grün                               | 46                                        | LCD_CS (Chip Select für den Display-Controller)
+// 39      | SCL               | Rot                                | 47                                        | LCD_SCL (Serieller Takt für den Display-Controller)
+// 40      | SDA               | Rot                                | 48                                        | LCD_SDA (Serielle Daten für den Display-Controller)
 
 
-// // Control Pins
-// #define LCD_VSYNC 5  // FPC Pin 22 (ESP32-S3 GPIO5)
-// #define LCD_HSYNC 4  // FPC Pin 23 (ESP32-S3 GPIO4)
-// #define LCD_DEN   3  // FPC Pin 24 (ESP32-S3 GPIO3)
-// #define LCD_PCLK  2  // FPC Pin 25 (ESP32-S3 GPIO2) (Pixel Clock)
-// #define LCD_RESET 1  // FPC Pin 27 (ESP32-S3 GPIO1)
-// #define LCD_CS    0  // FPC Pin 28 (ESP32-S3 GPIO0) (Chip Select for display controller)
+// --- Zugeordnete Defines für Arduino/ESP-IDF ---
+// Verwendung der tatsächlichen GPIO-Nummern des ESP32-S3, wie im Arduino-Core definiert.
 
-// --- Uncertainties / Pins that require verification ---
-// The following pins could not be clearly traced due to obstructions or complex routing.
-// A multimeter continuity check is crucial for these:
+// Rote Datenpins (5 Bits für RGB565, abgeleitet von R3-R7 des RGB888)
+#define LCD_R0    GPIO_NUM_0 // FPC Pin 8  (ESP32 - GPIO0 - ESP pin 5) - Rotes LSB
+#define LCD_R1    GPIO_NUM_1 // FPC Pin 9  (ESP32 - GPIO1 - ESP pin 6) - Rotes 2
+#define LCD_R2    GPIO_NUM_2 // FPC Pin 10 (ESP32 - GPIO2) - ESP pin 7 - Rotes 3
+#define LCD_R3    GPIO_NUM_3 // FPC Pin 11 (ESP32 - GPIO3) - ESP pin 8 - Rotes 4
+#define LCD_R4    GPIO_NUM_4 // FPC Pin 12 (ESP32 - GPIO4) - ESP pin 9 - Rotes MSB
 
-// #define LCD_DC    ?  // FPC Pin 29 (Data/Command for display controller)
-// #define LCD_SCL   ?  // FPC Pin 30 (Serial Clock for display controller, e.g., I2C/SPI)
-// #define LCD_SDA   ?  // FPC Pin 31 (Serial Data for display controller, e.g., I2C/SPI)
+// Grüne Datenpins (6 Bits für RGB565, abgeleitet von G2-G7 des RGB888)
+#define LCD_G0    GPIO_NUM_6 // FPC Pin 15 (ESP32 - GPIO6 - pin 11) - Grünes LSB
+#define LCD_G1    GPIO_NUM_7 // FPC Pin 16 (ESP32 - GPIO7 - pin 12) - Grünes 2
+#define LCD_G2    GPIO_NUM_8 // FPC Pin 17 (ESP32 - GPIO8 - pin 13) - Grünes 3
+#define LCD_G3    GPIO_NUM_9 // FPC Pin 18 (ESP32 - GPIO9 - pin 14) - Grünes 4
+#define LCD_G4    GPIO_NUM_10 // FPC Pin 19 (ESP32 - GPIO10 - pin 15) - Grünes 5
+#define LCD_G5    GPIO_NUM_11 // FPC Pin 20 (ESP32 - GPIO11 - pin 16) - Grünes MSB
 
+// Blaue Datenpins (5 Bits für RGB565, abgeleitet von B3-B7 des RGB888)
+#define LCD_B0    GPIO_NUM_12 // FPC Pin 24 (ESP32 - GPIO12 - pin 17) - Blaues LSB
+#define LCD_B1    GPIO_NUM_13 // FPC Pin 25 (ESP32 - GPIO13 - pin 18) - Blaues 2
+#define LCD_B2    GPIO_NUM_14 // FPC Pin 26 (ESP32 - GPIO14 - pin 19) - Blaues 3
+#define LCD_B3    GPIO_NUM_15 // FPC Pin 27 (ESP32 - GPIO15 - pin 21) - Blaues 4
+#define LCD_B4    GPIO_NUM_16 // FPC Pin 28 (ESP32 - GPIO16 - pin 22) - Blaues MSB
 
+// Steuerpins (Gängige Parallel-RGB-Signale)
+#define LCD_PCLK  GPIO_NUM_17 // FPC Pin 30 (ESP32 - GPIO17 - pin 23) - Pixel Takt
+#define LCD_RESET GPIO_NUM_46 // FPC Pin 31 (ESP32 - GPIO46 - pin 52) - Display Reset
+#define LCD_HSYNC GPIO_NUM_21 // FPC Pin 32 (ESP32 - GPIO21 - pin 27) - Horizontale Synchronisation
+#define LCD_VSYNC SPI_CLK_P// FPC Pin 33 (ESP32 - SPICLK_P - pin 36) - Vertikale Synchronisation
+#define LCD_DEN   GPIO_NUM_18 // FPC Pin 34 (ESP32 - GPIO18 - pin 24) - Data Enable
 
-// #define LCD_RD    ?  // FPC Pin 32 (Read Strobe - often not used in write-only setups)
-// #define LCD_WR    ?  // FPC Pin 33 (Write Strobe - often not used in write-only setups)
+// Serielle Steuerschnittstelle (für Display-Controller-Konfiguration, z.B. GC9503CV)
+#define LCD_CS    MTD0 // FPC Pin 38 (ESP32 - MTd0 - pin 45) - Chip Select
+#define LCD_SCL   MTCK // FPC Pin 39 (ESP32 - MTCK - pin 44) - Serieller Takt
+#define LCD_SDA   GPIO_NUM_38 // FPC Pin 40 (ESP32 - GPIO38 - pin 43) - Serielle Daten
 
-// Backlight Control (LEDA/LEDK - FPC Pins 2/3)
-// These typically connect to a backlight driver circuit. The control signal for this driver
-// (e.g., for PWM dimming) would then connect to an ESP32-S3 GPIO. This connection is not visible.
-// #define LCD_BL    ?  // GPIO for backlight control (e.g., PWM for brightness)
+// Hintergrundbeleuchtungssteuerung (LEDK/LEDA FPC Pins 1/2)
+// Diese Pins sind mit dem dedizierten Hintergrundbeleuchtungs-Treiber-IC auf der Hauptplatine verbunden (U7/L6-Schaltung).
+// Die spezifischen GPIOs des ESP32-S3 für die Steuerung der Hintergrundbeleuchtung (z.B. PWM für Helligkeit oder Enable)
+// sind in der bereitgestellten FPC-Leiterbahnverfolgung nicht direkt sichtbar. Sie könnten über andere Leiterbahnen
+// auf der Hauptplatine oder indirekt gesteuert werden.
+
 
 #endif // PINS_DISPLAY_H
