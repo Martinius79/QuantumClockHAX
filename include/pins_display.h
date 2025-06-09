@@ -60,6 +60,9 @@
 // --- Zugeordnete Defines für Arduino/ESP-IDF ---
 // Verwendung der tatsächlichen GPIO-Nummern des ESP32-S3, wie im Arduino-Core definiert.
 
+#define LCD_HRES  960 // Horizontale Auflösung des Displays (Breite)
+#define LCD_VRES  360 // Vertikale Auflösung des Displays (Höhe)
+
 // Rote Datenpins (5 Bits für RGB565, abgeleitet von R3-R7 des RGB888)
 #define LCD_R0    GPIO_NUM_0 // FPC Pin 8  (ESP32 - GPIO0 - ESP pin 5) - Rotes LSB
 #define LCD_R1    GPIO_NUM_1 // FPC Pin 9  (ESP32 - GPIO1 - ESP pin 6) - Rotes 2
@@ -86,13 +89,17 @@
 #define LCD_PCLK  GPIO_NUM_17 // FPC Pin 30 (ESP32 - GPIO17 - pin 23) - Pixel Takt
 #define LCD_RESET GPIO_NUM_46 // FPC Pin 31 (ESP32 - GPIO46 - pin 52) - Display Reset
 #define LCD_HSYNC GPIO_NUM_21 // FPC Pin 32 (ESP32 - GPIO21 - pin 27) - Horizontale Synchronisation
-#define LCD_VSYNC SPI_CLK_P// FPC Pin 33 (ESP32 - SPICLK_P - pin 36) - Vertikale Synchronisation
+#define LCD_VSYNC GPIO_NUM_47 // FPC Pin 33 (ESP32 - SPICLK_P - pin 36) - Vertikale Synchronisation
 #define LCD_DEN   GPIO_NUM_18 // FPC Pin 34 (ESP32 - GPIO18 - pin 24) - Data Enable
 
 // Serielle Steuerschnittstelle (für Display-Controller-Konfiguration, z.B. GC9503CV)
-#define LCD_CS    MTD0 // FPC Pin 38 (ESP32 - MTd0 - pin 45) - Chip Select
-#define LCD_SCL   MTCK // FPC Pin 39 (ESP32 - MTCK - pin 44) - Serieller Takt
+#define LCD_CS    GPIO_NUM_40 // FPC Pin 38 (ESP32 - MTd0 - pin 45) - Chip Select
+#define LCD_SCL   GPIO_NUM_39 // FPC Pin 39 (ESP32 - MTCK - pin 44) - Serieller Takt
 #define LCD_SDA   GPIO_NUM_38 // FPC Pin 40 (ESP32 - GPIO38 - pin 43) - Serielle Daten
+
+// --- Hintergrundbeleuchtung (LEDK/LEDA) ---
+#define LCD_BLK  GPIO_NUM_45 // FPC Pin 1 (LEDK) - Hintergrundbeleuchtung Kathode
+
 
 // Hintergrundbeleuchtungssteuerung (LEDK/LEDA FPC Pins 1/2)
 // Diese Pins sind mit dem dedizierten Hintergrundbeleuchtungs-Treiber-IC auf der Hauptplatine verbunden (U7/L6-Schaltung).

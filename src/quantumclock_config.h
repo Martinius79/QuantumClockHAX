@@ -1,4 +1,5 @@
 #define LGFX_USE_V1
+#include <pins_display.h>
 #include <LovyanGFX.hpp>
 
 #include <lgfx/v1/platforms/esp32s3/Panel_RGB.hpp>
@@ -26,6 +27,8 @@ public:
       cfg.offset_x = 0;
       cfg.offset_y = 0;
 
+      // cfg.pin_rst = LCD_RESET;
+
       _panel_instance.config(cfg);
     }
 
@@ -33,6 +36,9 @@ public:
       auto cfg = _panel_instance.config_detail();
 
       cfg.use_psram = 1;
+      cfg.pin_cs = LCD_CS;
+      cfg.pin_sclk = LCD_SCL;
+      cfg.pin_mosi = LCD_SDA;
 
       _panel_instance.config_detail(cfg);
     }
@@ -40,45 +46,48 @@ public:
     { // bus configuration - set pinout (GC9503CV)
       auto cfg = _bus_instance.config();
       cfg.panel = &_panel_instance;
-      cfg.pin_d0  = GPIO_NUM_0;  // B0
-      cfg.pin_d1  = GPIO_NUM_1;  // B1
-      cfg.pin_d2  = GPIO_NUM_2; // B2
-      cfg.pin_d3  = GPIO_NUM_3;  // B3
-      cfg.pin_d4  = GPIO_NUM_4;  // B4
-      cfg.pin_d5  = GPIO_NUM_6;  // G0
-      cfg.pin_d6  = GPIO_NUM_7;  // G1
-      cfg.pin_d7  = GPIO_NUM_8;  // G2
-      cfg.pin_d8  = GPIO_NUM_9; // G3
-      cfg.pin_d9  = GPIO_NUM_10; // G4
-      cfg.pin_d10 = GPIO_NUM_11;  // G5
-      cfg.pin_d11 = GPIO_NUM_12; // R0
-      cfg.pin_d12 = GPIO_NUM_13; // R1
-      cfg.pin_d13 = GPIO_NUM_14; // R2
-      cfg.pin_d14 = GPIO_NUM_15; // R3
-      cfg.pin_d15 = GPIO_NUM_16; // R4
+      cfg.pin_d0  = LCD_B0;  // B0
+      cfg.pin_d1  = LCD_B1;  // B1
+      cfg.pin_d2  = LCD_B2; // B2
+      cfg.pin_d3  = LCD_B3;  // B3
+      cfg.pin_d4  = LCD_B4;  // B4
+      cfg.pin_d5  = LCD_G0;  // G0
+      cfg.pin_d6  = LCD_G1;  // G1
+      cfg.pin_d7  = LCD_G2;  // G2
+      cfg.pin_d8  = LCD_G3; // G3
+      cfg.pin_d9  = LCD_G4; // G4
+      cfg.pin_d10 = LCD_G5;  // G5
+      cfg.pin_d11 = LCD_R0; // R0
+      cfg.pin_d12 = LCD_R1; // R1
+      cfg.pin_d13 = LCD_R2; // R2
+      cfg.pin_d14 = LCD_R3; // R3
+      cfg.pin_d15 = LCD_R4; // R4
 
-      cfg.pin_henable = GPIO_NUM_18; // DE (Data Enable)
-      cfg.pin_vsync   = GPIO_NUM_40; // VSYNC
-      cfg.pin_hsync   = GPIO_NUM_21; // HSYNC
-      cfg.pin_pclk    = GPIO_NUM_17; // PCLK (Pixel Clock)
-      cfg.freq_write  = 12000000;
+      cfg.pin_henable = LCD_DEN; // DE (Data Enable)
+      cfg.pin_vsync   = LCD_VSYNC; // VSYNC
+      cfg.pin_hsync   = LCD_HSYNC; // HSYNC
+      cfg.pin_pclk    = LCD_PCLK; // PCLK (Pixel Clock)
+      cfg.freq_write  = 15000000;
 
-      cfg.hsync_polarity    = 0;
-      cfg.hsync_front_porch = 8;
-      cfg.hsync_pulse_width = 2;
-      cfg.hsync_back_porch  = 43;
-      cfg.vsync_polarity    = 0;
-      cfg.vsync_front_porch = 8;
-      cfg.vsync_pulse_width = 2;
-      cfg.vsync_back_porch  = 12;
-      cfg.pclk_idle_high    = 1;
+      cfg.hsync_polarity = 1;
+      cfg.hsync_front_porch = 10;
+      cfg.hsync_pulse_width = 8;
+      cfg.hsync_back_porch = 50;
+      cfg.vsync_polarity = 1;
+      cfg.vsync_front_porch = 10;
+      cfg.vsync_pulse_width = 8;
+      cfg.vsync_back_porch = 20;
+      cfg.pclk_idle_high = 0;
+      cfg.de_idle_high = 0;
+      cfg.pclk_active_neg = 0;
+
       _bus_instance.config(cfg);
     }
     _panel_instance.setBus(&_bus_instance);
 
     {
       auto cfg = _light_instance.config();
-      cfg.pin_bl = GPIO_NUM_45;
+      cfg.pin_bl = LCD_BLK;
       _light_instance.config(cfg);
     }
     _panel_instance.light(&_light_instance);
