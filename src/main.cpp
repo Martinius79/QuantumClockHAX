@@ -59,21 +59,38 @@ void setup() {
   lcd.setBrightness(255); // Helligkeit auf Maximum setzen
   Serial.println("Helligkeit nach Setzen: " + String(lcd.getBrightness())); // Helligkeit nach dem Setzen abfragen (optional)
 
+  Serial.println("Fülle den Bildschirm mit Schwarz...");
+  lcd.fillScreen(TFT_BLACK);
+  delay(1000); // Wartezeit, um die Farbe zu sehen
 
+  Serial.println("Schreibe Text auf den Bildschirm...");
+  lcd.setTextSize(2);
+  lcd.setTextColor(TFT_WHITE);
+  lcd.setCursor(10, 10);
+  lcd.println("GC9503CV Display");
+  lcd.println("LovyanGFX Konfig");
+  lcd.println("Erfolgreich!");
+  delay(2000); // Wartezeit, um die Nachricht zu sehen
+  Serial.println("Fülle den Bildschirm mit Rot...");
   lcd.fillScreen(TFT_RED);
   delay(1000); // Wartezeit, um die Farbe zu sehen
 }
 
 void loop() {
   Serial.println("Im Loop...");
-  lcd.fillScreen(TFT_RED);
+  Serial.println("Fülle den Bildschirm mit Rot...");
+  lcd.fillScreen(TFT_RED);  
   delay(1000); // Wartezeit für die nächste Iteration
+  Serial.println("Fülle den Bildschirm mit Grün...");
   lcd.fillScreen(TFT_GREEN); // Bildschirm grün füllen
   delay(1000); // Wartezeit, um die Farbe zu sehen
+  Serial.println("Fülle den Bildschirm mit Blau...");
   lcd.fillScreen(TFT_BLUE); // Bildschirm schwarz füllen
   delay(1000); // Wartezeit, um die Farbe zu sehen
+  Serial.println("Fülle den Bildschirm mit Schwarz...");
   lcd.fillScreen(TFT_BLACK); // Bildschirm löschen
   delay(1000); // Wartezeit, um den Bildschirm zu sehen
+  Serial.println("Fülle den Bildschirm mit Weiß...");
   lcd.fillScreen(TFT_WHITE); // Bildschirm weiß füllen
   delay(1000); // Wartezeit, um die Farbe zu sehen
   // Dein Zeichencode hier
