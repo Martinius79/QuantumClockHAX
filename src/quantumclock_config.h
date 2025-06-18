@@ -1,5 +1,4 @@
 #define LGFX_USE_V1
-#include <pins_display.h>
 #include <LovyanGFX.hpp>
 
 #include <lgfx/v1/platforms/esp32s3/Panel_RGB.hpp>
@@ -27,46 +26,46 @@
 // 5       | R0                | Auf GND gezogen (Benutzerinfo)     | -                                         | Rote Daten 0 (auf GND für RGB565)
 // 6       | R1                | Auf GND gezogen (Benutzerinfo)     | -                                         | Rote Daten 1 (auf GND für RGB565)
 // 7       | R2                | Auf GND gezogen (Benutzerinfo)     | -                                         | Rote Daten 2 (auf GND für RGB565)
-// 8       | R3                | Orange                             | GPIO0                                     | LCD_R0 (Rotes LSB für RGB565)
-// 9       | R4                | Orange                             | GPIO1                                     | LCD_R1
-// 10      | R5                | Orange                             | GPIO2                                     | LCD_R2
-// 11      | R6                | Orange                             | GPIO3                                     | LCD_R3
-// 12      | R7                | Orange                             | GPIO4                                     | LCD_R4 (Rotes MSB für RGB565)
+// 8       | R3                | Orange                             |                                      | LCD_R0 (Rotes LSB für RGB565)
+// 9       | R4                | Orange                             |                                      | LCD_R1
+// 10      | R5                | Orange                             |                                      | LCD_R2
+// 11      | R6                | Orange                             |                                      | LCD_R3
+// 12      | R7                | Orange                             |                                      | LCD_R4 (Rotes MSB für RGB565)
 // 13      | G0                | Auf GND gezogen (Benutzerinfo)     | -                                         | Grüne Daten 0 (auf GND für RGB565)
 // 14      | G1                | Auf GND gezogen (Benutzerinfo)     | -                                         | Grüne Daten 1 (auf GND für RGB565)
-// 15      | G2                | Grün                               | 6                                         | LCD_G0 (Grünes LSB für RGB565)
-// 16      | G3                | Grün                               | 7                                         | LCD_G1
-// 17      | G4                | Grün                               | 8                                         | LCD_G2
-// 18      | G5                | Grün                               | 9                                         | LCD_G3
-// 19      | G6                | Grün                               | 10                                        | LCD_G4
-// 20      | G7                | Grün                               | 11                                        | LCD_G5 (Grünes MSB für RGB565)
+// 15      | G2                | Grün                               |                                          | LCD_G0 (Grünes LSB für RGB565)
+// 16      | G3                | Grün                               |                                          | LCD_G1
+// 17      | G4                | Grün                               |                                          | LCD_G2
+// 18      | G5                | Grün                               |                                          | LCD_G3
+// 19      | G6                | Grün                               |                                         | LCD_G4
+// 20      | G7                | Grün                               |                                         | LCD_G5 (Grünes MSB für RGB565)
 // 21      | B0                | Auf GND gezogen (Benutzerinfo)     | -                                         | Blaue Daten 0 (auf GND für RGB565)
 // 22      | B1                | Auf GND gezogen (Benutzerinfo)     | -                                         | Blaue Daten 1 (auf GND für RGB565)
 // 23      | B2                | Auf GND gezogen (Benutzerinfo)     | -                                         | Blaue Daten 2 (auf GND für RGB565)
-// 24      | B3                | Hellblau                           | 12                                        | LCD_B0 (Blaues LSB für RGB565)
-// 25      | B4                | Hellblau                           | 13                                        | LCD_B1
-// 26      | B5                | Hellblau                           | 14                                        | LCD_B2
-// 27      | B6                | Hellblau                           | 15                                        | LCD_B3
-// 28      | B7                | Hellblau                           | 16                                        | LCD_B4 (Blaues MSB für RGB565)
+// 24      | B3                | Hellblau                           |                                         | LCD_B0 (Blaues LSB für RGB565)
+// 25      | B4                | Hellblau                           |                                         | LCD_B1
+// 26      | B5                | Hellblau                           |                                         | LCD_B2
+// 27      | B6                | Hellblau                           |                                         | LCD_B3
+// 28      | B7                | Hellblau                           |                                         | LCD_B4 (Blaues MSB für RGB565)
 // 29      | GND               | Schwarz                            | -                                         | Masse (Ground)
-// 30      | CLK               | Hellblau                           | 38                                        | LCD_PCLK (Pixel Takt)
-// 31      | RESET             | Lila                               | 39                                        | LCD_RESET (Display Reset)
-// 32      | Hsync             | Blau                               | 40                                        | LCD_HSYNC (Horizontale Synchronisation)
-// 33      | Vsync             | Blau                               | 41                                        | LCD_VSYNC (Vertikale Synchronisation)
-// 34      | DE                | Blau                               | 42                                        | LCD_DEN (Data Enable)
+// 30      | CLK               | Hellblau                           |                                         | LCD_PCLK (Pixel Takt)
+// 31      | RESET             | Lila                               |                                         | LCD_RESET (Display Reset)
+// 32      | Hsync             | Blau                               |                                         | LCD_HSYNC (Horizontale Synchronisation)
+// 33      | Vsync             | Blau                               |                                         | LCD_VSYNC (Vertikale Synchronisation)
+// 34      | DE                | Blau                               |                                         | LCD_DEN (Data Enable)
 // 35      | NC                | Auf GND gezogen (Benutzerinfo)     | -                                         | Nicht verbunden (auf Masse gezogen)
 // 36      | GND               | Schwarz                            | -                                         | Masse (Ground)
 // 37      | SDD               | Auf GND gezogen (Benutzerinfo)     | -                                         | Serielle Dateneingabe (auf Masse gezogen) - Wahrscheinlich für SPI/I2C Konfiguration des Display-ICs, aber hier nicht verwendet.
-// 38      | CS                | Grün                               | 46                                        | LCD_CS (Chip Select für den Display-Controller)
-// 39      | SCL               | Rot                                | 47                                        | LCD_SCL (Serieller Takt für den Display-Controller)
-// 40      | SDA               | Rot                                | 48                                        | LCD_SDA (Serielle Daten für den Display-Controller)
+// 38      | CS                | Grün                               |                                         | LCD_CS (Chip Select für den Display-Controller)
+// 39      | SCL               | Rot                                |                                         | LCD_SCL (Serieller Takt für den Display-Controller)
+// 40      | SDA               | Rot                                |                                         | LCD_SDA (Serielle Daten für den Display-Controller)
 
 
 // --- Zugeordnete Defines für Arduino/ESP-IDF ---
 // Verwendung der tatsächlichen GPIO-Nummern des ESP32-S3, wie im Arduino-Core definiert.
 
 #define LCD_HRES  960 // Horizontale Auflösung des Displays (Breite)
-#define LCD_VRES  360 // Vertikale Auflösung des Displays (Höhe)
+#define LCD_VRES  480 // Vertikale Auflösung des Displays (Höhe)
 
 // Rote Datenpins (5 Bits für RGB565, abgeleitet von R3-R7 des RGB888)
 #define LCD_R0    GPIO_NUM_0 // FPC Pin 8  (ESP32 - GPIO0 - ESP pin 5) - Rotes LSB
@@ -98,7 +97,7 @@
 #define LCD_DEN   GPIO_NUM_18 // FPC Pin 34 (ESP32 - GPIO18 - pin 24) - Data Enable
 
 // Serielle Steuerschnittstelle (für Display-Controller-Konfiguration, z.B. GC9503CV)
-#define LCD_CS    GPIO_NUM_40 // FPC Pin 38 (ESP32 - MTd0 - pin 45) - Chip Select
+#define LCD_CS    GPIO_NUM_40 // FPC Pin 38 (ESP32 - MTD0 - pin 45) - Chip Select
 #define LCD_SCL   GPIO_NUM_39 // FPC Pin 39 (ESP32 - MTCK - pin 44) - Serieller Takt
 #define LCD_SDA   GPIO_NUM_38 // FPC Pin 40 (ESP32 - GPIO38 - pin 43) - MOSI - Serielle Daten
 #define LCD_SDO   -1 // FPC Pin 37 - Ground (ESP32 - NC) - MISO - Serielle Dateneingabe (NC in dieser Schaltung, auf GND gezogen)
@@ -118,7 +117,7 @@ class LGFX : public lgfx::LGFX_Device
 {
 public:
   lgfx::Bus_RGB     _bus_instance;
-  lgfx::Panel_GC9503   _panel_instance;
+  lgfx::Panel_GC9503_Quantum_Clock   _panel_instance;
   lgfx::Light_PWM   _light_instance;
 
   LGFX(void)
@@ -126,16 +125,29 @@ public:
     { // panel settings - resolution
       auto cfg = _panel_instance.config();
 
+      //1
       cfg.memory_width  = LCD_VRES;
       cfg.memory_height = LCD_HRES;
       cfg.panel_width  = LCD_VRES;
       cfg.panel_height = LCD_HRES;
 
+      // cfg.memory_width  = 480;
+      // cfg.memory_height = 480;
+      // cfg.panel_width  = 480;
+      // cfg.panel_height = 480;
+
+      //2
+      // cfg.memory_width  = LCD_HRES;
+      // cfg.memory_height = LCD_VRES;
+      // cfg.panel_width  = LCD_HRES;
+      // cfg.panel_height = LCD_VRES;
+
       cfg.offset_x = 0;
       cfg.offset_y = 0;
 
       cfg.pin_rst = LCD_RESET;
-      //cfg.pin_cs = LCD_CS;      
+      cfg.pin_cs = LCD_CS;
+      // cfg.pin_cs = -1; // disable CS pin, not used in this configuration
 
       _panel_instance.config(cfg);
     }
@@ -147,6 +159,9 @@ public:
       cfg.pin_cs = LCD_CS;
       cfg.pin_sclk = LCD_SCL;
       cfg.pin_mosi = LCD_SDA;
+      // cfg.pin_cs = -1; // disable CS pin, not used in this configuration
+      // cfg.pin_sclk = -1; // disable SCL pin, not used in this configuration
+      // cfg.pin_mosi = -1; // disable SDA pin, not used in this configuration
 
       _panel_instance.config_detail(cfg);
     }
@@ -175,35 +190,85 @@ public:
       cfg.pin_vsync   = LCD_VSYNC; // VSYNC
       cfg.pin_hsync   = LCD_HSYNC; // HSYNC
       cfg.pin_pclk    = LCD_PCLK; // PCLK (Pixel Clock)      
-      // cfg.freq_write  = 15000000; //default 15MHz, but can be adjusted based on your display's requirements -> not enough for 960x360@60Hz
+      cfg.freq_write  = 16600000; //default 15MHz, but can be adjusted based on your display's requirements -> not enough for 960x360@60Hz
       // cfg.freq_write  = 25628640; // ~26MHz for 960x360@60Hz
-      cfg.freq_write  = 32000000; // ~32MHz for 960x360@60Hz
+      // cfg.freq_write  = 32000000; // ~32MHz for 960x360@60Hz
+      // cfg.freq_write  = 1000000; // 1MHz for testing purposes, adjust as needed
 
-      // from ???
-      // cfg.hsync_polarity = 1;
-      // cfg.hsync_front_porch = 10;
+      //to try:
+
+      // Horizontales Timing (Breite 960 Pixel):
+
+// HSYNC Pulse Length (HPW): 2 - 10 Takte (z.B. 8)
+// Horizontal Back Porch (HBP): 20 - 60 Takte (z.B. 40)
+// Horizontal Front Porch (HFP): 20 - 60 Takte (z.B. 40)
+// Total Horizontal Period (HTOTAL): HPW + HBP + Aktive Pixel (960) + HFP
+// Vertikales Timing (Höhe 360 Pixel):
+
+// VSYNC Pulse Length (VPW): 1 - 5 Zeilen (z.B. 4)
+// Vertical Back Porch (VBP): 2 - 20 Zeilen (z.B. 8)
+// Vertical Front Porch (VFP): 2 - 20 Zeilen (z.B. 8)
+// Total Vertical Period (VTOTAL): VPW + VBP + Aktive Zeilen (360) + VFP
+
+      //hsync
+      //2-10
       // cfg.hsync_pulse_width = 8;
-      // cfg.hsync_back_porch = 50;
-      // cfg.vsync_polarity = 1;
-      // cfg.vsync_front_porch = 10;
-      // cfg.vsync_pulse_width = 8;
-      // cfg.vsync_back_porch = 20;
-      // cfg.pclk_idle_high = 0;
-      // cfg.de_idle_high = 0;
-      // cfg.pclk_active_neg = 0;
+      //2-50     
+      // cfg.hsync_front_porch = 40;
+      //2-100
+      // cfg.hsync_back_porch = 40;
 
+      //vsync
+      //1-5
+      // cfg.vsync_pulse_width = 5; // 1
+      // cfg.vsync_pulse_width = 4; // 2
+      //cfg.vsync_pulse_width = 20; // 3
+      // cfg.vsync_pulse_width = 10; // 4
+      //1-20
+      // cfg.vsync_front_porch = 20; // 1
+      // cfg.vsync_front_porch = 20; // 2
+      // cfg.vsync_front_porch = 5; // 3
+      // cfg.vsync_front_porch = 1; //4
+      // cfg.vsync_front_porch = 8; // 5
+      //2-50
+      // cfg.vsync_back_porch = 20; // V - stripes
+      // cfg.vsync_back_porch = 35; // V - stripes
+      //cfg.vsync_back_porch = 40; // not working with 40
+      //cfg.vsync_back_porch = 2; // V - stripes
+      //cfg.vsync_back_porch = 5; // V - stripes
+      // cfg.vsync_back_porch = 30; // V - stripes
+      // cfg.vsync_back_porch = 10; // V - stripes
+      //cfg.vsync_back_porch = 50; //not working with 50
+
+      // cfg.hsync_pulse_width = 20;    // <-- HSYNC Pulsbreite in PCLK-Zyklen
+      // cfg.hsync_back_porch  = 20;    // <-- Horizontal Back Porch
+      // cfg.hsync_front_porch = 10;    // <-- Horizontal Front Porch     
+      // cfg.vsync_pulse_width = 5;     // <-- VSYNC Pulsbreite in Zeilen
+      // cfg.vsync_back_porch  = 20;    // <-- Vertikaler Back Porch
+      // cfg.vsync_front_porch = 15;    // <-- Vertikaler Front Porch
+
+      //polarity
+      cfg.hsync_polarity = true; 
+      cfg.vsync_polarity = true;
+
+      //flanken
+      cfg.pclk_idle_high = false;
+      cfg.de_idle_high = false;
+      cfg.pclk_active_neg = false;
+     
+ 
       //from HA_Deck
-      cfg.hsync_polarity = 1;
+      // cfg.hsync_polarity = 1;
       cfg.hsync_front_porch = 8;
       cfg.hsync_pulse_width = 10;
       cfg.hsync_back_porch = 50;
-      cfg.vsync_polarity = 1;
+      // cfg.vsync_polarity = 1;
       cfg.vsync_front_porch = 8;
       cfg.vsync_pulse_width = 10;
       cfg.vsync_back_porch = 20;
-      cfg.pclk_idle_high = 0;
-      cfg.de_idle_high = 0;
-      cfg.pclk_active_neg = 0;
+      // cfg.pclk_idle_high = 0;
+      // cfg.de_idle_high = 0;
+      // cfg.pclk_active_neg = 0;
 
       //from LovyanGFX-GUITION-ESP32-4848S040
       // cfg.hsync_polarity    = 0;
