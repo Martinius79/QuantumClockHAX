@@ -146,7 +146,7 @@ namespace lgfx
     esp_lcd_i80_bus_config_t bus_config;
     memset(&bus_config, 0, sizeof(esp_lcd_i80_bus_config_t));
     // bus_config.dc_gpio_num = GPIO_NUM_NC;
-    Serial.println("Bus_RGB::init()");
+    // Serial.println("Bus_RGB::init()");
 
     // Serial.println("  pin_vsync: " + String(_cfg.pin_vsync));
     // Serial.println("  pin_pclk: " + String(_cfg.pin_pclk));
