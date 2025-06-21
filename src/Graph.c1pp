@@ -1,0 +1,303 @@
+#include <Arduino.h>
+#include "quantumclock_config.h" // Dein Dateiname
+// #define LGFX_AUTODETECT
+// #include <LGFX_AUTODETECT.hpp>
+
+#include <vector>
+
+#define LINE_COUNT 6
+
+static LGFX lcd;
+
+unsigned long lastFreqChange = 0;
+float currentFreq = 13.0; // Startwert in MHz
+
+const int y_axis_start = 100; // Startwert für vertikale Achse
+const int x_axis_start = 10; // Startwert für horizontale Achse
+
+static std::vector<int> points[LINE_COUNT];
+static int colors[] = { TFT_RED, TFT_GREEN, TFT_BLUE, TFT_CYAN, TFT_MAGENTA, TFT_YELLOW };
+static int xoffset, yoffset, point_count;
+      //hsync
+      // X = 2-10
+      // cfg.hsync_pulse_width = X;
+      // X = 2-50
+      // cfg.hsync_front_porch = X;
+      // X = 2-100
+      // cfg.hsync_back_porch = X;
+
+      //vsync
+      // X = 1-5
+      // cfg.vsync_pulse_width = X;
+      // X = 1-20
+      // cfg.vsync_front_porch = X;
+      // X = 2-50
+      // cfg.vsync_back_porch = X;
+struct TimingState {
+  int hsync_pulse = 10;
+  int hsync_front = 8;
+  int hsync_back  = 50;
+
+  int vsync_pulse = 10;
+  int vsync_front = 8;
+  int vsync_back  = 20;
+  bool done = false;
+};
+
+TimingState timingState;
+unsigned long lastTimingChange = 0;
+
+// Gibt true zurück, wenn noch Kombinationen übrig sind
+bool nextTiming(LGFX& lcd, TimingState& s) {
+  // if (s.done) return false;
+  // s.hsync_pulse += 2;
+  // if (s.hsync_pulse > 10) {
+  //   s.hsync_pulse = 2;
+  //   s.hsync_front += 10;
+  //   if (s.hsync_front > 50) {
+  //     s.hsync_front = 2;
+  //     s.hsync_back += 10;
+  //     if (s.hsync_back > 100) {
+  //       s.hsync_back = 2;
+  //       s.vsync_pulse += 1;
+  //       if (s.vsync_pulse > 5) {
+  //         s.vsync_pulse = 1;
+  //         s.vsync_front += 4;
+  //         if (s.vsync_front > 20) {
+  //           s.vsync_front = 1;
+  //           s.vsync_back += 10;
+  //           if (s.vsync_back > 50) {
+  //             s.done = true;
+  //             return false;
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
+  if (s.done) return false;
+  s.hsync_pulse += 1;
+  if (s.hsync_pulse > 10) {
+    s.hsync_pulse = 10;
+    s.hsync_front += 2;
+    if (s.hsync_front > 10) {
+      s.hsync_front = 10;
+      s.hsync_back += 10;
+      if (s.hsync_back > 50) {
+        s.hsync_back = 50;
+        s.vsync_pulse += 2;
+        if (s.vsync_pulse > 15) {
+          s.vsync_pulse = 5;
+          s.vsync_front += 2;
+          if (s.vsync_front > 12) {
+            s.vsync_front = 6;
+            s.vsync_back += 2;
+            if (s.vsync_back > 24) {
+              s.done = true;
+              return false;
+            }
+          }
+        }
+      }
+    }
+  }
+  auto cfg = lcd._bus_instance.config();
+  cfg.hsync_pulse_width = s.hsync_pulse;
+  cfg.hsync_front_porch = s.hsync_front;
+  cfg.hsync_back_porch  = s.hsync_back;
+  cfg.vsync_pulse_width = s.vsync_pulse;
+  cfg.vsync_front_porch = s.vsync_front;
+  cfg.vsync_back_porch  = s.vsync_back;
+  lcd._bus_instance.config(cfg);
+
+  Serial.printf("HSYNC: PW=%d, FP=%d, BP=%d | VSYNC: PW=%d, FP=%d, BP=%d\n",
+    s.hsync_pulse, s.hsync_front, s.hsync_back,
+    s.vsync_pulse, s.vsync_front, s.vsync_back);
+
+  // lcd.init(); // Panel neu initialisieren!
+  return true;
+}
+
+int getBaseColor(int x, int y)
+{
+  return ((x^y)&3 || ((x-xoffset)&31 && y&31) ? TFT_BLACK : ((!y || x == xoffset) ? TFT_WHITE : TFT_DARKGREEN));
+}
+
+void setup(void)
+{
+  Serial.begin(115200);
+  delay(2000);
+  
+  lastTimingChange = millis();
+  //lcd.init();
+
+  // auto cfg = lcd._bus_instance.config();
+  // cfg.hsync_pulse_width = timingState.hsync_pulse;
+  // cfg.hsync_front_porch = timingState.hsync_front;
+  // cfg.hsync_back_porch  = timingState.hsync_back;
+  // cfg.vsync_pulse_width = timingState.vsync_pulse;
+  // cfg.vsync_front_porch = timingState.vsync_front;
+  // cfg.vsync_back_porch  = timingState.vsync_back;
+  // lcd._bus_instance.config(cfg);
+  lcd.init();
+  
+
+  // if (lcd.width() < lcd.height()) {
+  //   lcd.setRotation(lcd.getRotation() ^ 1);
+  // }
+  Serial.printf("Width: %d, Height: %d, Rotation: %d\n", lcd.width(), lcd.height(), lcd.getRotation());
+
+  yoffset = lcd.height() >> 1;
+  xoffset = lcd.width()  >> 1;
+  Serial.printf("xoffset: %d, yoffset: %d\n", xoffset, yoffset);
+  
+  point_count = lcd.width() + 1;
+  Serial.printf("Point count: %d\n", lcd.width() + 1);
+
+  for (int i = 0; i < LINE_COUNT; i++)
+  {
+    points[i].resize(point_count);
+  }
+
+  lcd.startWrite();
+  lcd.setAddrWindow(0, 0, lcd.width(), lcd.height());
+
+  // lcd.drawFastHLine(0, yoffset, lcd.width(), TFT_WHITE);
+  // lcd.drawFastVLine(xoffset, 0, lcd.height(), TFT_WHITE);
+
+  for (int y = 0; y < lcd.height(); y++)
+  {
+    for (int x = 0; x < lcd.width(); x++)
+    {
+      lcd.writeColor(getBaseColor(x, y - yoffset), 1);
+    }
+  }
+  lcd.endWrite();
+  Serial.println("Display initialized and cleared.");
+  Serial.printf("Initial freq_write: %.1f MHz\n", currentFreq);
+
+  delay(1000); // Warten, damit die Ausgabe lesbar ist
+}
+
+void loop(void)
+{
+  static int prev_sec;
+  static int fps;
+  ++fps;
+  int sec = millis() / 1000;
+  if (prev_sec != sec)
+  {
+    prev_sec = sec;
+    lcd.setCursor(100,100);
+    lcd.printf("fps:%03d", fps);
+    Serial.printf("fps:%03d\n", fps);
+    fps = 0;
+  }
+
+  // if (millis() - lastFreqChange > 5000) {
+  //   currentFreq += 0.05;
+  //   if (currentFreq > 14.0) currentFreq = 13.0; // Wieder von vorne beginnen
+
+  //   auto cfg = lcd._bus_instance.config();
+  //   cfg.freq_write = (uint32_t)(currentFreq * 1000000); // Umrechnung MHz -> Hz
+  //   lcd._bus_instance.config(cfg);
+
+  //   Serial.printf("Neue freq_write: %.1f MHz\n", currentFreq);
+
+  //   lastFreqChange = millis();
+  // }
+    // Timingwechsel alle 3 Sekunden
+  // if (!timingState.done && millis() - lastTimingChange > 3000) {
+  //   if (nextTiming(lcd, timingState)) {
+  //     lastTimingChange = millis();
+  //   }
+  // }
+
+  static int count;
+
+  // for (int i = 0; i < LINE_COUNT; i++)
+  // {
+  //   points[i][count % point_count] = (sinf((float)count / (10 + 30 * i))+sinf((float)count / (13 + 37 * i))) * (lcd.height() >> 2);
+  // }
+
+  for (int i = 0; i < LINE_COUNT; i++)
+  {
+    // Gleichmäßig verteilte horizontale Linien
+    int y = ((i + 1) * lcd.height()) / (LINE_COUNT + 1) - yoffset;
+    points[i][count % point_count] = y;
+  }
+
+  ++count;
+
+  lcd.startWrite();  
+  // Vertikaler Zahlenstrahl (links)
+// Vertikaler Zahlenstrahl (links)
+for (int y = 0, val = y_axis_start; y < lcd.height(); y += 50, val += 50) {
+  lcd.drawLine(0, y, 10, y, TFT_WHITE); // Markierungsstrich
+  lcd.setCursor(15, y - 6);             // Zahl leicht oberhalb der Linie
+  lcd.setTextColor(TFT_WHITE, TFT_BLACK);
+  lcd.printf("%d", val);
+}
+
+// Horizontaler Zahlenstrahl (unten)
+for (int x = 0, val = x_axis_start; x < lcd.width(); x += 50, val += 50) {
+  lcd.drawLine(x, lcd.height() - 11, x, lcd.height() - 1, TFT_WHITE); // Markierungsstrich
+  lcd.setCursor(x + 2, lcd.height() - 20);                            // Zahl leicht über dem Strich
+  lcd.setTextColor(TFT_WHITE, TFT_BLACK);
+  lcd.printf("%d", val);
+}
+  int index1 = count % point_count;
+  for (int x = 0; x < point_count-1; x++)
+  {
+    int index0 = index1;
+    index1 = (index0 +1) % point_count;
+    for (int i = 0; i < LINE_COUNT; i++)
+    {
+      int y = points[i][index0];
+      if (y != points[i][index1])
+      {
+        lcd.writePixel(x, y + yoffset, getBaseColor(x, y));
+      }
+    }
+
+    for (int i = 0; i < LINE_COUNT; i++)
+    {
+      int y = points[i][index1];
+      lcd.writePixel(x, y + yoffset, colors[i]);
+    }
+  }
+
+  lcd.endWrite();
+}
+
+// ...existing code...
+
+// void test_all_timings(LGFX& lcd) {
+//   for (int hsync_pulse = 2; hsync_pulse <= 10; hsync_pulse+2) {
+//     for (int hsync_front = 2; hsync_front <= 50; hsync_front+10) {
+//       for (int hsync_back = 2; hsync_back <= 100; ++hsync_back+10) {
+//         for (int vsync_pulse = 1; vsync_pulse <= 5; ++vsync_pulse) {
+//           for (int vsync_front = 1; vsync_front <= 20; ++vsync_front+4) {
+//             for (int vsync_back = 2; vsync_back <= 50; ++vsync_back+10) {
+//               auto cfg = lcd._bus_instance.config();
+//               cfg.hsync_pulse_width = hsync_pulse;
+//               cfg.hsync_front_porch = hsync_front;
+//               cfg.hsync_back_porch  = hsync_back;
+//               cfg.vsync_pulse_width = vsync_pulse;
+//               cfg.vsync_front_porch = vsync_front;
+//               cfg.vsync_back_porch  = vsync_back;
+//               lcd._bus_instance.config(cfg);
+
+//               // Optional: Ausgabe der aktuellen Werte
+//               Serial.printf("HSYNC: PW=%d, FP=%d, BP=%d | VSYNC: PW=%d, FP=%d, BP=%d\n",
+//                 hsync_pulse, hsync_front, hsync_back,
+//                 vsync_pulse, vsync_front, vsync_back);
+
+//               delay(3000); // Zeit zum Beobachten, ggf. anpassen
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
