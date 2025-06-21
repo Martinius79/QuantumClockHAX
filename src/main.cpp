@@ -29,14 +29,14 @@ void setup() {
   }
 
   // drawJpgFile() requires a JPEG file in SPIFFS
-  // lcd.fillScreen(TFT_BLACK);
-  // Serial.println("Draw JPEG image...0");
-  // lcd.drawJpgFile(SPIFFS, "/0.jpg", 0, 0); // Show image at top left
-  // delay(5000); // Wait to see the image
+  lcd.fillScreen(TFT_BLACK);
+  Serial.println("Draw JPEG image...0");
+  lcd.drawJpgFile(SPIFFS, "/0.jpg", 0, 0); // Show image at top left
+  delay(5000); // Wait to see the image
 
   lcd.fillScreen(TFT_BLACK);
   Serial.println("Draw JPEG image...3");
-  lcd.drawJpgFile(SPIFFS, "/3.jpg", 0, 0); // Show image at top left
+  lcd.drawJpgFile(SPIFFS, "/1.jpg", 0, 0); // Show image at top left
   delay(200); // Wait to draw the image
   
   Serial.println("Brightness: " + String(lcd.getBrightness())); // Query brightness (optional)  
