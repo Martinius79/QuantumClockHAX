@@ -46,7 +46,7 @@ namespace lgfx
 
   void Panel_Device::initBus(void)
   {
-    Serial.printf("Panel_Device::initBus\n");
+    // Serial.printf("Panel_Device::initBus\n");
     // Serial.printf("Panel_Device::initBus _bus->init()\n");
     _bus->init();
     // Serial.printf("Panel_Device::initBus bus initialized\n");
@@ -54,7 +54,7 @@ namespace lgfx
 
   void Panel_Device::releaseBus(void)
   {
-    Serial.printf("Panel_Device::releaseBus\n");
+    // Serial.printf("Panel_Device::releaseBus\n");
     // Serial.printf("Panel_Device::releaseBus _bus->release()\n");
     _bus->release();
     // Serial.printf("Panel_Device::releaseBus bus released\n");
@@ -62,7 +62,7 @@ namespace lgfx
 
   bool Panel_Device::init(bool use_reset)
   {
-    Serial.printf("Panel_Device::init use_reset: %d\n", use_reset);
+    // Serial.printf("Panel_Device::init use_reset: %d\n", use_reset);
     // Serial.printf("Panel_Device::init init_rst()\n");
     init_rst();
     // Serial.printf("Panel_Device::init init_rst() done\n");
@@ -92,7 +92,7 @@ namespace lgfx
     {      
       delay(64);
     }
-    Serial.printf("Panel_Device::init Device init done\n");
+    // Serial.printf("Panel_Device::init Device init done\n");
     return true;
   }
 
@@ -129,50 +129,50 @@ namespace lgfx
 
   void Panel_Device::writeCommand(uint32_t data, uint_fast8_t length)
   {
-    Serial.printf("Panel_Device::writeCommand data: %08x, length: %d\n", data, length);
+    // Serial.printf("Panel_Device::writeCommand data: %08x, length: %d\n", data, length);
     delay(10); // Wait for pin state to stabilize
     if (_cfg.dlen_16bit)
     {
-      Serial.printf("Panel_Device::writeCommand dlen_16bit\n");
+      // Serial.printf("Panel_Device::writeCommand dlen_16bit\n");
       if (_has_align_data)
       {
-        Serial.printf("Panel_Device::writeCommand has_align_data\n");
+        // Serial.printf("Panel_Device::writeCommand has_align_data\n");
         _has_align_data = false;
-        Serial.printf("Panel_Device::writeCommand bus->writeData(0, 8)\n");
+        // Serial.printf("Panel_Device::writeCommand bus->writeData(0, 8)\n");
         _bus->writeData(0, 8);
       }
       if (length == 1) {
-        Serial.printf("Panel_Device::writeCommand length == 1\n");
-        Serial.printf("Panel_Device::writeCommand change to lenght = 2,data <<= 8\n");
+        // Serial.printf("Panel_Device::writeCommand length == 1\n");
+        // Serial.printf("Panel_Device::writeCommand change to lenght = 2,data <<= 8\n");
         length = 2; data <<= 8; 
       }
     }
-    Serial.printf("Panel_Device::writeCommand bus->writeCommand(data, length << 3)\n");
+    // Serial.printf("Panel_Device::writeCommand bus->writeCommand(data, length << 3)\n");
     _bus->writeCommand(data, length << 3);
   }
 
   void Panel_Device::writeData(uint32_t data, uint_fast8_t length)
   {
-    Serial.printf("Panel_Device::writeData data: %08x, length: %d\n", data, length);  
+    // Serial.printf("Panel_Device::writeData data: %08x, length: %d\n", data, length);  
     if (!_cfg.dlen_16bit)
     {
-      Serial.printf("Panel_Device::writeData dlen_16bit == false\n");
-      Serial.printf("Panel_Device::writeData bus->writeData(data, length << 3)\n");
+      // Serial.printf("Panel_Device::writeData dlen_16bit == false\n");
+      // Serial.printf("Panel_Device::writeData bus->writeData(data, length << 3)\n");
       _bus->writeData(data, length << 3);
     }
     else
     {
-      Serial.printf("Panel_Device::writeData dlen_16bit == true\n");
+      // Serial.printf("Panel_Device::writeData dlen_16bit == true\n");
       if (length == 1)
       {
-        Serial.printf("Panel_Device::writeData length == 1\n");        
-        Serial.printf("Panel_Device::writeData bus->writeData(data << 8, 16)\n");
+        // Serial.printf("Panel_Device::writeData length == 1\n");        
+        // Serial.printf("Panel_Device::writeData bus->writeData(data << 8, 16)\n");
         _bus->writeData(data << 8, 16);
       }
       else
       {
-        Serial.printf("Panel_Device::writeData length != 1\n");
-        Serial.printf("Panel_Device::writeData bus->writeData(data, length << 3)\n");
+        // Serial.printf("Panel_Device::writeData length != 1\n");
+        // Serial.printf("Panel_Device::writeData bus->writeData(data, length << 3)\n");
         _bus->writeData(data, length << 3);
       }
     }
@@ -352,7 +352,7 @@ namespace lgfx
 
   void Panel_Device::init_cs(void)
   {
-    Serial.printf("Panel_Device::init_cs()\n");
+    // Serial.printf("Panel_Device::init_cs()\n");
     auto pin = _cfg.pin_cs;
     if (pin < 0) return;
     // Serial.printf("Panel_Device::init_cs(%d) gpio_hi\n", pin);
@@ -363,7 +363,7 @@ namespace lgfx
 
   void Panel_Device::init_rst(void)
   {
-    Serial.printf("Panel_Device::init_rst()\n");
+    // Serial.printf("Panel_Device::init_rst()\n");
     auto pin = _cfg.pin_rst;
     if (pin < 0) return;
     // Serial.printf("Panel_Device::init_rst(%d) gpio_hi\n", pin);
@@ -374,7 +374,7 @@ namespace lgfx
 
   void Panel_Device::cs_control(bool level)
   {
-    Serial.printf("Panel_Device::cs_control(%d)\n", level);
+    // Serial.printf("Panel_Device::cs_control(%d)\n", level);
     auto pin = _cfg.pin_cs;
     if (pin < 0) return;
     if (level)
@@ -391,7 +391,7 @@ namespace lgfx
 
   void Panel_Device::rst_control(bool level)
   {
-    Serial.printf("Panel_Device::rst_control(%d)\n", level);
+    // Serial.printf("Panel_Device::rst_control(%d)\n", level);
     auto pin = _cfg.pin_rst;
     if (pin < 0) return;
     if (level)

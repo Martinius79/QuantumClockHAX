@@ -34,11 +34,21 @@ void setup() {
   lcd.drawJpgFile(SPIFFS, "/0.jpg", 0, 0); // Show image at top left
   delay(5000); // Wait to see the image
 
+  // lcd.fillScreen(TFT_BLACK);
+  // Serial.println("Draw BMP image...24bit - 2");
+  // lcd.drawBmpFile(SPIFFS, "/2.bmp", 0, 0); // Show image at top left
+  // delay(5000); // Wait to draw the image
+
+  // lcd.fillScreen(TFT_BLACK);
+  // Serial.println("Draw BMP image...16bit - 4");
+  // lcd.drawBmpFile(SPIFFS, "/4.bmp", 0, 0); // Show image at top left
+  // delay(5000); // Wait to draw the image
+
   lcd.fillScreen(TFT_BLACK);
   Serial.println("Draw JPEG image...3");
   lcd.drawJpgFile(SPIFFS, "/1.jpg", 0, 0); // Show image at top left
   delay(200); // Wait to draw the image
-  
+ 
   Serial.println("Brightness: " + String(lcd.getBrightness())); // Query brightness (optional)  
   lcd.setBrightness(255); // Set brightness to maximum
   Serial.println("Brightness after setting: " + String(lcd.getBrightness())); // Query brightness after setting (optional)
