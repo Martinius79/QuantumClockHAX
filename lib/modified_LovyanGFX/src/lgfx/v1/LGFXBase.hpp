@@ -1412,7 +1412,9 @@ namespace lgfx
     board_t getBoard(void) const { return _board; }
     void initBus(void);
     void releaseBus(void);
-    void setPanel(Panel_Device* panel);
+    void setPanel(
+      Panel_Device* panel
+    );
 
     void setEpdMode(epd_mode_t epd_mode) { _panel->setEpdMode(epd_mode); }
     epd_mode_t getEpdMode(void) const { return _panel->getEpdMode(); }

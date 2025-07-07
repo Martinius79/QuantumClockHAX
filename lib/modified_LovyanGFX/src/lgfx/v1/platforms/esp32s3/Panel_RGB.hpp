@@ -44,12 +44,18 @@ namespace lgfx
     const config_detail_t& config_detail(void) const { return _config_detail; }
     void config_detail(const config_detail_t& config_detail) { _config_detail = config_detail; }
 
+    void dumpFrameBuffer(int num_lines, int num_pixels_per_line);
+
     color_depth_t setColorDepth(color_depth_t) override { return _write_depth; }
 
     void setPsram( bool use_psram ) { _config_detail.use_psram = use_psram; }
 
-    bool init(bool) override;
+    void setSwapBytes(bool swap) { _swap_bytes = swap; }
+    bool getSwapBytes() const { return _swap_bytes; }
 
+    bool init(bool) override;
+    void drawPixelPreclipped(uint_fast16_t x, uint_fast16_t y, uint32_t rawcolor) override;
+    void writeFillRectPreclipped(uint_fast16_t x, uint_fast16_t y, uint_fast16_t w, uint_fast16_t h, uint32_t rawcolor) override;
     void writeCommand(uint32_t, uint_fast8_t) override;
     void writeData(uint32_t, uint_fast8_t) override;
 
@@ -63,6 +69,8 @@ namespace lgfx
     uint8_t _lines_per_chunk = 4;
 
     uint8_t* _frame_buffer = nullptr;
+
+    bool _swap_bytes = false;
 /*
     uint16_t* _allocated_list = nullptr;
     struct config_detail_t

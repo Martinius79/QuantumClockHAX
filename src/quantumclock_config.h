@@ -20,11 +20,11 @@
 // 5       | R0                 | GND                                        | Red data 0 (tied to GND for RGB565)
 // 6       | R1                 | GND                                        | Red data 1 (tied to GND for RGB565)
 // 7       | R2                 | GND                                        | Red data 2 (tied to GND for RGB565)
-// 8       | R3                 | GPIO_NUM_0                                 | LCD_R0 (Red LSB for RGB565)
-// 9       | R4                 | GPIO_NUM_1                                 | LCD_R1
-// 10      | R5                 | GPIO_NUM_2                                 | LCD_R2
-// 11      | R6                 | GPIO_NUM_3                                 | LCD_R3
-// 12      | R7                 | GPIO_NUM_4                                 | LCD_R4 (Red MSB for RGB565)
+// 8       | R3                 | GPIO_NUM_1                                 | LCD_R0 (Red LSB for RGB565)
+// 9       | R4                 | GPIO_NUM_2                                 | LCD_R1
+// 10      | R5                 | GPIO_NUM_3                                 | LCD_R2
+// 11      | R6                 | GPIO_NUM_4                                 | LCD_R3
+// 12      | R7                 | GPIO_NUM_5                                 | LCD_R4 (Red MSB for RGB565)
 // 13      | G0                 | GND                                        | Green data 0 (tied to GND for RGB565)
 // 14      | G1                 | GND                                        | Green data 1 (tied to GND for RGB565)
 // 15      | G2                 | GPIO_NUM_6                                 | LCD_G0 (Green LSB for RGB565)
@@ -58,32 +58,77 @@
 // Use the actual GPIO numbers of the ESP32-S3, as defined in the Arduino core.
 
 #define LCD_HRES  960 // Horizontal resolution of the GC9503CV driver (width)
-#define LCD_VRES  480 // Vertical resolution of the GC9503CV driver (height)
+#define LCD_VRES  420 // Vertical resolution of the GC9503CV driver (height)
 
 #define LCD_HRES_PHYS  960 // Physical horizontal resolution of the display (width)
 #define LCD_VRES_PHYS  420 // Physical vertical resolution of the display (height)
 
 // Red data pins (5 bits for RGB565, derived from R3-R7 of RGB888)
-#define LCD_R0    GPIO_NUM_0 // FPC Pin 8  (ESP32 - GPIO0 - ESP pin 5) - Red LSB
-#define LCD_R1    GPIO_NUM_1 // FPC Pin 9  (ESP32 - GPIO1 - ESP pin 6) - Red 2
-#define LCD_R2    GPIO_NUM_2 // FPC Pin 10 (ESP32 - GPIO2) - ESP pin 7 - Red 3
-#define LCD_R3    GPIO_NUM_3 // FPC Pin 11 (ESP32 - GPIO3) - ESP pin 8 - Red 4
-#define LCD_R4    GPIO_NUM_4 // FPC Pin 12 (ESP32 - GPIO4) - ESP pin 9 - Red MSB
+// #define LCD_R0    GPIO_NUM_0 // FPC Pin 8  (ESP32 - GPIO0 - ESP pin 5) - Red LSB
+// #define LCD_R1    GPIO_NUM_1 // FPC Pin 9  (ESP32 - GPIO1 - ESP pin 6) - Red 2
+// #define LCD_R2    GPIO_NUM_2 // FPC Pin 10 (ESP32 - GPIO2) - ESP pin 7 - Red 3
+// #define LCD_R3    GPIO_NUM_3 // FPC Pin 11 (ESP32 - GPIO3) - ESP pin 8 - Red 4
+// #define LCD_R4    GPIO_NUM_4 // FPC Pin 12 (ESP32 - GPIO4) - ESP pin 9 - Red MSB
+
+// Red data pins (5 bits for RGB565, derived from R3-R7 of RGB888)
+#define LCD_R0    GPIO_NUM_NC // FPC Pin 5  (GND) - NC for RGB565
+#define LCD_R1    GPIO_NUM_NC // FPC Pin 6  (GND) - NC for RGB565   
+#define LCD_R2    GPIO_NUM_NC // FPC Pin 7  (GND) - ESP pin 7 - NC for RGB565
+#define LCD_R3    GPIO_NUM_1  // FPC Pin 8  (ESP32 - GPIO0 - ESP pin 5) - Red LSB
+#define LCD_R4    GPIO_NUM_2  // FPC Pin 9  (ESP32 - GPIO1 - ESP pin 6) - Red 2
+#define LCD_R5    GPIO_NUM_3  // FPC Pin 10 (ESP32 - GPIO2) - ESP pin 7 - Red 3
+#define LCD_R6    GPIO_NUM_4  // FPC Pin 11 (ESP32 - GPIO3) - ESP pin 8 - Red 4
+#define LCD_R7    GPIO_NUM_5  // FPC Pin 12 (ESP32 - GPIO4) - ESP pin 9 - Red MSB
+
+// switching the red and blue data pins to match the RGB565 format
+// #define LCD_R0    GPIO_NUM_NC // FPC Pin 5  (GND) - NC for RGB565
+// #define LCD_R1    GPIO_NUM_NC // FPC Pin 6  (GND) - NC for RGB565   
+// #define LCD_R2    GPIO_NUM_NC // FPC Pin 7  (GND) - ESP pin 7 - NC for RGB565
+// #define LCD_R3    GPIO_NUM_12 // FPC Pin 8  (ESP32 - GPIO0 - ESP pin 5) - Red LSB
+// #define LCD_R4    GPIO_NUM_13 // FPC Pin 9  (ESP32 - GPIO1 - ESP pin 6) - Red 2
+// #define LCD_R5    GPIO_NUM_14 // FPC Pin 10 (ESP32 - GPIO2) - ESP pin 7 - Red 3
+// #define LCD_R6    GPIO_NUM_15 // FPC Pin 11 (ESP32 - GPIO3) - ESP pin 8 - Red 4
+// #define LCD_R7    GPIO_NUM_16 // FPC Pin 12 (ESP32 - GPIO4) - ESP pin 9 - Red MSB
 
 // Green data pins (6 bits for RGB565, derived from G2-G7 of RGB888)
-#define LCD_G0    GPIO_NUM_6 // FPC Pin 15 (ESP32 - GPIO6 - pin 11) - Green LSB
-#define LCD_G1    GPIO_NUM_7 // FPC Pin 16 (ESP32 - GPIO7 - pin 12) - Green 2
-#define LCD_G2    GPIO_NUM_8 // FPC Pin 17 (ESP32 - GPIO8 - pin 13) - Green 3
-#define LCD_G3    GPIO_NUM_9 // FPC Pin 18 (ESP32 - GPIO9 - pin 14) - Green 4
-#define LCD_G4    GPIO_NUM_10 // FPC Pin 19 (ESP32 - GPIO10 - pin 15) - Green 5
-#define LCD_G5    GPIO_NUM_11 // FPC Pin 20 (ESP32 - GPIO11 - pin 16) - Green MSB
+#define LCD_G0    GPIO_NUM_NC // FPC Pin 13 (GND) - NC for RGB565
+#define LCD_G1    GPIO_NUM_NC // FPC Pin 14 (GND) - NC for RGB565
+#define LCD_G2    GPIO_NUM_6  // FPC Pin 15 (ESP32 - GPIO6 - pin 11) - Green LSB
+#define LCD_G3    GPIO_NUM_7  // FPC Pin 16 (ESP32 - GPIO7 - pin 12) - Green 2
+#define LCD_G4    GPIO_NUM_8  // FPC Pin 17 (ESP32 - GPIO8 - pin 13) - Green 3
+#define LCD_G5    GPIO_NUM_9  // FPC Pin 18 (ESP32 - GPIO9 - pin 14) - Green 4
+#define LCD_G6    GPIO_NUM_10 // FPC Pin 19 (ESP32 - GPIO10 - pin 15) - Green 5
+#define LCD_G7    GPIO_NUM_11 // FPC Pin 20 (ESP32 - GPIO11 - pin 16) - Green MSB
 
 // Blue data pins (5 bits for RGB565, derived from B3-B7 of RGB888)
-#define LCD_B0    GPIO_NUM_12 // FPC Pin 24 (ESP32 - GPIO12 - pin 17) - Blue LSB
-#define LCD_B1    GPIO_NUM_13 // FPC Pin 25 (ESP32 - GPIO13 - pin 18) - Blue 2
-#define LCD_B2    GPIO_NUM_14 // FPC Pin 26 (ESP32 - GPIO14 - pin 19) - Blue 3
-#define LCD_B3    GPIO_NUM_15 // FPC Pin 27 (ESP32 - GPIO15 - pin 21) - Blue 4
-#define LCD_B4    GPIO_NUM_16 // FPC Pin 28 (ESP32 - GPIO16 - pin 22) - Blue MSB
+// #define LCD_B0    GPIO_NUM_12 // FPC Pin 24 (ESP32 - GPIO12 - pin 17) - Blue LSB
+// #define LCD_B1    GPIO_NUM_13 // FPC Pin 25 (ESP32 - GPIO13 - pin 18) - Blue 2
+// #define LCD_B2    GPIO_NUM_14 // FPC Pin 26 (ESP32 - GPIO14 - pin 19) - Blue 3
+// #define LCD_B3    GPIO_NUM_15 // FPC Pin 27 (ESP32 - GPIO15 - pin 21) - Blue 4
+// #define LCD_B4    GPIO_NUM_16 // FPC Pin 28 (ESP32 - GPIO16 - pin 22) - Blue MSB
+
+// Blue data pins (5 bits for RGB565, derived from B3-B7 of RGB888)
+#define LCD_B0    GPIO_NUM_NC // FPC Pin 21 (GND) - NC for RGB565
+#define LCD_B1    GPIO_NUM_NC // FPC Pin 22 (GND) - NC for RGB565
+#define LCD_B2    GPIO_NUM_NC // FPC Pin 23 (GND) - NC for RGB565
+#define LCD_B3    GPIO_NUM_12 // FPC Pin 24 (ESP32 - GPIO12 - pin 17) - Blue LSB
+#define LCD_B4    GPIO_NUM_13 // FPC Pin 25 (ESP32 - GPIO13 - pin 18) - Blue 2
+#define LCD_B5    GPIO_NUM_14 // FPC Pin 26 (ESP32 - GPIO14 - pin 19) - Blue 3
+#define LCD_B6    GPIO_NUM_15 // FPC Pin 27 (ESP32 - GPIO15 - pin 21) - Blue 4
+#define LCD_B7    GPIO_NUM_16 // FPC Pin 28 (ESP32 - GPIO16 - pin 22) - Blue MSB
+
+// switching the red and blue data pins to match the RGB565 format
+// #define LCD_B0    GPIO_NUM_NC // FPC Pin (GND) - NC for RGB565
+// #define LCD_B1    GPIO_NUM_NC // FPC Pin (GND) - NC for RGB565
+// #define LCD_B2    GPIO_NUM_NC // FPC Pin (GND) - NC for RGB565 
+// #define LCD_B3    GPIO_NUM_0 // FPC Pin 24 (ESP32 - GPIO12 - pin 17) - Blue LSB
+// #define LCD_B4    GPIO_NUM_1 // FPC Pin 25 (ESP32 - GPIO13 - pin 18) - Blue 2
+// #define LCD_B5    GPIO_NUM_2 // FPC Pin 26 (ESP32 - GPIO14 - pin 19) - Blue 3
+// #define LCD_B6    GPIO_NUM_3 // FPC Pin 27 (ESP32 - GPIO15 - pin 21) - Blue 4
+// #define LCD_B7    GPIO_NUM_4 // FPC Pin 28 (ESP32 - GPIO16 - pin 22) - Blue MSB
+
+
+
 
 // Control pins (common parallel RGB signals)
 #define LCD_PCLK  GPIO_NUM_17 // FPC Pin 30 (ESP32 - GPIO17 - pin 23) - Pixel clock
@@ -130,6 +175,12 @@ public:
       cfg.pin_rst = LCD_RESET;
       cfg.pin_cs = LCD_CS;
 
+      // Has no effect on the GC9503CV by default -> NEED IMPLEMENTATION IN THE PANEL DRIVER
+      // cfg.rgb_order = true; // Def: true=RGB / false=BGR
+
+      cfg.dlen_16bit = true; // 16-bit data length (RGB565) - true for RGB565, false for RGB888
+      cfg.readable = false; // false=not readable / true=readable (not used in this case, as the GC9503CV does not support reading back pixel data)
+
       _panel_instance.config(cfg);
     }
 
@@ -149,23 +200,43 @@ public:
       auto cfg = _bus_instance.config();
       cfg.panel = &_panel_instance;
 
-      // RGB 16-bit parallel interface
-      cfg.pin_d0  = LCD_B0; // B0
-      cfg.pin_d1  = LCD_B1; // B1
-      cfg.pin_d2  = LCD_B2; // B2
-      cfg.pin_d3  = LCD_B3; // B3
-      cfg.pin_d4  = LCD_B4; // B4
-      cfg.pin_d5  = LCD_G0; // G0
-      cfg.pin_d6  = LCD_G1; // G1
-      cfg.pin_d7  = LCD_G2; // G2
-      cfg.pin_d8  = LCD_G3; // G3
-      cfg.pin_d9  = LCD_G4; // G4
-      cfg.pin_d10 = LCD_G5; // G5
-      cfg.pin_d11 = LCD_R0; // R0
-      cfg.pin_d12 = LCD_R1; // R1
-      cfg.pin_d13 = LCD_R2; // R2
-      cfg.pin_d14 = LCD_R3; // R3
-      cfg.pin_d15 = LCD_R4; // R4
+      // BGR Order -  16-bit parallel interface
+      //  order is RGB, because the GC9503CV driver is initialized with wrong order in the MADCTL register -> CAN BE CHANGED in the init sequence of the GC9503CV driver
+      // switching the MADCTL register via software is not implemented here, so we use the RGB order here
+      cfg.pin_d0  = LCD_B3; // B0
+      cfg.pin_d1  = LCD_B4; // B1
+      cfg.pin_d2  = LCD_B5; // B2
+      cfg.pin_d3  = LCD_B6; // B3
+      cfg.pin_d4  = LCD_B7; // B4
+      cfg.pin_d5  = LCD_G2; // G0
+      cfg.pin_d6  = LCD_G3; // G1
+      cfg.pin_d7  = LCD_G4; // G2
+      cfg.pin_d8  = LCD_G5; // G3
+      cfg.pin_d9  = LCD_G6; // G4
+      cfg.pin_d10 = LCD_G7; // G5
+      cfg.pin_d11 = LCD_R3; // R0
+      cfg.pin_d12 = LCD_R4; // R1
+      cfg.pin_d13 = LCD_R5; // R2
+      cfg.pin_d14 = LCD_R6; // R3
+      cfg.pin_d15 = LCD_R7; // R4
+
+      // RGB Order - 16-bit parallel interface
+      // cfg.pin_d0  = LCD_R3; // B0
+      // cfg.pin_d1  = LCD_R4; // B1
+      // cfg.pin_d2  = LCD_R5; // B2
+      // cfg.pin_d3  = LCD_R6; // B3
+      // cfg.pin_d4  = LCD_R7; // B4
+      // cfg.pin_d5  = LCD_G2; // G0
+      // cfg.pin_d6  = LCD_G3; // G1
+      // cfg.pin_d7  = LCD_G4; // G2
+      // cfg.pin_d8  = LCD_G5; // G3
+      // cfg.pin_d9  = LCD_G6; // G4
+      // cfg.pin_d10 = LCD_G7; // G5
+      // cfg.pin_d11 = LCD_B3; // R0
+      // cfg.pin_d12 = LCD_B4; // R1
+      // cfg.pin_d13 = LCD_B5; // R2
+      // cfg.pin_d14 = LCD_B6; // R3
+      // cfg.pin_d15 = LCD_B7; // R4
 
       cfg.pin_henable = LCD_DEN; // DE (Data Enable)
       cfg.pin_vsync   = LCD_VSYNC; // VSYNC
@@ -173,7 +244,7 @@ public:
       cfg.pin_pclk    = LCD_PCLK; // PCLK (Pixel Clock)
 
       //polarity
-      cfg.hsync_polarity = true; 
+      cfg.hsync_polarity = true;
       cfg.vsync_polarity = true;
 
       //edges
@@ -182,9 +253,9 @@ public:
       cfg.pclk_active_neg = false;
 
       // pixel clock frequency (in Hz)
-      cfg.freq_write = 13000000; // ~13MHz
-      // cfg.freq_write  = 15000000; // default 15MHz, but can be adjusted based on your display's requirements -> not enough for 960x360@30Hz
-      // cfg.freq_write = 16651080; // ~16.65MHz      
+      // cfg.freq_write = 13000000; // ~13MHz
+      cfg.freq_write  = 12000000; // default 16MHz, but can be adjusted based on your display's requirements -> not enough for 960x360@30Hz
+      // cfg.freq_write = 16651080; // ~16.65MHz
       // cfg.freq_write = 33302160; // ~33.3MHz
 
       // working, but when drawing a lot of pixels, the display is flickering and glitching

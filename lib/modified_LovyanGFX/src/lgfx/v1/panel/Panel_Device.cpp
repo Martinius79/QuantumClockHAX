@@ -62,7 +62,7 @@ namespace lgfx
 
   bool Panel_Device::init(bool use_reset)
   {
-    // Serial.printf("Panel_Device::init use_reset: %d\n", use_reset);
+    Serial.printf("Panel_Device::init use_reset: %d\n", use_reset);
     // Serial.printf("Panel_Device::init init_rst()\n");
     init_rst();
     // Serial.printf("Panel_Device::init init_rst() done\n");
@@ -82,9 +82,9 @@ namespace lgfx
       // Serial.printf("Panel_Device::init rst_control(false) done\n");
       delay(8);
     }
-    // Serial.printf("Panel_Device::init _bus->init()\n");
+    Serial.printf("Panel_Device::init _bus->init()\n");
     _bus->init();
-    // Serial.printf("Panel_Device::init _bus->init() done\n");
+    Serial.printf("Panel_Device::init _bus->init() done\n");
     // Serial.printf("Panel_Device::init rst_control(true)\n");
     rst_control(true);
     // Serial.printf("Panel_Device::init rst_control(true) done\n");
@@ -92,7 +92,7 @@ namespace lgfx
     {      
       delay(64);
     }
-    // Serial.printf("Panel_Device::init Device init done\n");
+    Serial.printf("Panel_Device::init Device init done\n");
     return true;
   }
 

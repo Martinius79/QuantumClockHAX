@@ -87,6 +87,7 @@ namespace lgfx
 
   color_depth_t Panel_Sprite::setColorDepth(color_depth_t depth)
   {
+    Serial.printf("Panel_Sprite::setColorDepth depth: %04X\n", (uint16_t)depth);
     _write_depth = depth;
     _read_depth = depth;
     return depth;
@@ -94,6 +95,7 @@ namespace lgfx
 
   void Panel_Sprite::setRotation(uint_fast8_t r)
   {
+    Serial.printf("Panel_Sprite::setRotation r: %d\n", r);
     r &= 7;
     _rotation = r;
     auto pw = _panel_width;

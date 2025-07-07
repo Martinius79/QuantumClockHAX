@@ -142,7 +142,7 @@ namespace lgfx
     // ESP_ERROR_CHECK(esp_lcd_new_rgb_panel(&_panel_config, &_panel_handle));
     // Serial.println("  esp_lcd_new_rgb_panel done");
     // dummy settings.
-    // Serial.println("Bus_RGB::init() - esp_lcd_new_rgb_panel not used, using esp_lcd_new_i80_bus instead");
+    Serial.println("Bus_RGB::init() - esp_lcd_new_rgb_panel not used, using esp_lcd_new_i80_bus instead");
     esp_lcd_i80_bus_config_t bus_config;
     memset(&bus_config, 0, sizeof(esp_lcd_i80_bus_config_t));
     // bus_config.dc_gpio_num = GPIO_NUM_NC;
@@ -168,29 +168,48 @@ namespace lgfx
     bus_config.max_transfer_bytes = 4092;
     // Serial.println(" after set psram transfer alignment: ");
 
-    // Serial.println(" new i80 bus: ");
+    Serial.println(" new i80 bus: ");
     if (ESP_OK != esp_lcd_new_i80_bus(&bus_config, &_i80_bus)) {
       Serial.println("  esp_lcd_new_i80_bus failed");
       return false;
     }
-    // Serial.println("  esp_lcd_new_i80_bus done");
+    Serial.println("  esp_lcd_new_i80_bus done");
     // Serial.println("get write depth: ");
     uint8_t pixel_bytes = (_cfg.panel->getWriteDepth() & bit_mask) >> 3;
+    Serial.printf("Bus_RGB::init() - pixel_bytes: %d\n", pixel_bytes);
     // Serial.println("  get dev: ");
     auto dev = getDev(_cfg.port);
-    // Serial.println("cfg port: " + String(_cfg.port));    
-    // Serial.println("  dev: " + String((uintptr_t)dev));
+    Serial.println("cfg port: " + String(_cfg.port));    
+    Serial.println("  dev: " + String((uintptr_t)dev));
     {
       static constexpr const uint8_t rgb332sig_tbl[] = { 1, 0, 1, 0, 1, 2, 3, 4, 2, 3, 4, 5, 6, 5, 6, 7 };
       static constexpr const uint8_t rgb565sig_tbl[] = { 8, 9, 10, 11, 12, 13, 14, 15, 0, 1, 2, 3, 4, 5, 6, 7 };
-      auto tbl = (pixel_bytes == 2) ? rgb565sig_tbl : rgb332sig_tbl;
+      const uint8_t* tbl;
+      if (pixel_bytes == 2) {
+        Serial.println("Bus_RGB::init() - Using RGB565 signal table");
+        tbl = rgb565sig_tbl;
+      } else {
+        Serial.println("Bus_RGB::init() - Using RGB332 signal table");
+        tbl = rgb332sig_tbl;
+      }
 #if SOC_LCDCAM_RGB_LCD_SUPPORTED
       auto sigs = &lcd_periph_rgb_signals.panels[_cfg.port];
 #else
       auto sigs = &lcd_periph_signals.panels[_cfg.port];
       // Serial.println("  lcd_periph_signals.panels[_cfg.port]: " + String((uintptr_t)sigs));
+      Serial.println("  lcd_periph_signals.panels[_cfg.port].module: " + String(sigs->module));
+      Serial.println("  lcd_periph_signals.panels[_cfg.port].irq_id: " + String(sigs->irq_id));
+      Serial.println("  lcd_periph_signals.panels[_cfg.port].data_sigs: ");
+      for (int i = 0; i < SOC_LCD_RGB_DATA_WIDTH; i++) {
+        Serial.printf("    %d: %d\n", i, sigs->data_sigs[i]);
+      }
+      Serial.println("  lcd_periph_signals.panels[_cfg.port].hsync_sig: " + String(sigs->hsync_sig));
+      Serial.println("  lcd_periph_signals.panels[_cfg.port].vsync_sig: " + String(sigs->vsync_sig));
+      Serial.println("  lcd_periph_signals.panels[_cfg.port].pclk_sig: " + String(sigs->pclk_sig));
+      Serial.println("  lcd_periph_signals.panels[_cfg.port].de_sig: " + String(sigs->de_sig));
 #endif
       for (size_t i = 0; i < 16; i++) {
+        Serial.printf("setting pin with _gpio_pin_sig  pin_data[%d]: %d, sig: %d\n", i, _cfg.pin_data[i], sigs->data_sigs[tbl[i]]);
         _gpio_pin_sig(_cfg.pin_data[i], sigs->data_sigs[tbl[i]]);
       }
       _gpio_pin_sig(_cfg.pin_henable, sigs->de_sig);
@@ -270,6 +289,7 @@ namespace lgfx
     uint32_t active_height = _cfg.panel->height();
 
     uint32_t div_a, div_b, div_n, clkcnt;
+    Serial.println("  calc clock div: ");
     calcClockDiv(&div_a, &div_b, &div_n, &clkcnt, 240*1000*1000, std::min<uint32_t>(_cfg.freq_write, 40000000u));
     // Serial.println("  set clock div: ");
     typeof(dev->lcd_clock) lcd_clock;
@@ -295,6 +315,8 @@ namespace lgfx
     // lcd_user.lcd_bit_order = false;
     // lcd_user.lcd_byte_order = false;
     lcd_user.lcd_2byte_en = pixel_bytes > 1; // RGB565 or RGB332
+    Serial.printf("Bus_RGB::init() - lcd_2byte_en: %d\n", lcd_user.lcd_2byte_en);
+    
     lcd_user.lcd_dout = 1;
     // lcd_user.lcd_dummy = 0;
     // lcd_user.lcd_cmd = 0;

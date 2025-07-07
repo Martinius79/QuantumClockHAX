@@ -28,10 +28,12 @@ namespace lgfx
 
   bool Panel_LCD::init(bool use_reset)
   {
+    Serial.printf("Panel_LCD::init use_reset: %d, pin_cs: %d, busType: %d\n", use_reset, _cfg.pin_cs, _bus->busType());
     if (!Panel_Device::init(use_reset))
     {
       return false;
     }
+    Serial.printf("Panel_LCD::init - Panel_Device::init done\n");
 
     // pin_csが設定されておらずバスタイプがi2cでない場合は、
     // トランザクション終了時にnopを送信する。
@@ -115,14 +117,19 @@ namespace lgfx
 
   color_depth_t Panel_LCD::setColorDepth(color_depth_t depth)
   {
+    Serial.printf("Panel_LCD::setColorDepth depth: %d\n", (int)depth);
+
     setColorDepth_impl(depth);
 
+    Serial.printf("Panel_LCD::setColorDepth - Calling update_madctl\n");
     update_madctl();
+    Serial.printf("Panel_LCD::setColorDepth - called update_madctl\n");
 
     return _write_depth;
   }
   void Panel_LCD::setRotation(uint_fast8_t r)
   {
+    Serial.printf("Panel_LCD::setRotation r: %d, offset_rotation: %d\n", r, _cfg.offset_rotation);
     r &= 7;
     _rotation = r;
     // offset_rotationを加算 (0~3:回転方向、 4:上下反転フラグ);
@@ -151,10 +158,12 @@ namespace lgfx
     _xs = _xe = _ys = _ye = INT16_MAX;
 
     update_madctl();
+    Serial.printf("Panel_LCD::setRotation done, _width: %d, _height: %d, _colstart: %d, _rowstart: %d\n", _width, _height, _colstart, _rowstart);
   }
 
   void Panel_LCD::update_madctl(void)
   {
+    Serial.printf("Panel_LCD::update_madctl _write_bits: %d, _internal_rotation: %d, rgb_order: %d\n", _write_bits, _internal_rotation, _cfg.rgb_order);
     if (_bus != nullptr)
     {
       
@@ -166,6 +175,7 @@ namespace lgfx
       _bus->flush();
       endWrite();
     }
+    Serial.printf("Panel_LCD::update_madctl done\n");
   }
 
   void Panel_LCD::write_command(uint32_t data)

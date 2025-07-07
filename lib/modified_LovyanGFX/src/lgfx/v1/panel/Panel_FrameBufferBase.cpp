@@ -73,23 +73,42 @@ namespace lgfx
 
   bool Panel_FrameBufferBase::init(bool use_reset)
   {
+    Serial.printf("Panel_FrameBufferBase::init\n");
+    Serial.printf("Panel_FrameBufferBase::init cfg: %d,%d, %d,%d, %d,%d, %d,%d, %d, %d, %d, %d, %d\n",
+      _cfg.panel_width, _cfg.panel_height,
+      _cfg.memory_width, _cfg.memory_height,
+      _cfg.offset_x, _cfg.offset_y,
+      _cfg.offset_rotation,
+      _cfg.dummy_read_pixel,
+      _cfg.dummy_read_bits,
+      _cfg.end_read_delay_us,
+      _cfg.readable,
+      _cfg.invert,
+      _cfg.rgb_order,
+      _cfg.dlen_16bit);
+
+      _cfg.rgb_order = !_cfg.rgb_order; // LovyanGFXではBGRがデフォルトなので、trueにするとBGRからRGBに変換される
+
 #if defined ( LGFX_USE_CACHE_WRITEBACK_ADDR )
     // キャッシュのライトバックを display メソッドで行うため、auto_displayで自動化する
     _auto_display = true;
 #endif
-
     setInvert(_invert);
     setRotation(_rotation);
 
+    Serial.printf("Panel_FrameBufferBase::init - Calling Panel_Device::init\n");
     if (!Panel_Device::init(use_reset))
     {
       return false;
     }
+    Serial.printf("Panel_FrameBufferBase::init - Panel_Device::init done\n");
+    
     return true;
   }
 
   void Panel_FrameBufferBase::setRotation(uint_fast8_t r)
   {
+    Serial.printf("Panel_FrameBufferBase::setRotation r: %d, offset_rotation: %d\n", r, _cfg.offset_rotation);
     r &= 7;
     _rotation = r;
     _internal_rotation = ((r + _cfg.offset_rotation) & 3) | ((r & 4) ^ (_cfg.offset_rotation & 4));
@@ -106,6 +125,7 @@ namespace lgfx
     _ye = ph-1;
     _xs = 0;
     _ys = 0;
+    Serial.printf("Panel_FrameBufferBase::setRotation done width: %d, height: %d\n", _width, _height);
   }
 
   void Panel_FrameBufferBase::display(uint_fast16_t x, uint_fast16_t y, uint_fast16_t w, uint_fast16_t h)

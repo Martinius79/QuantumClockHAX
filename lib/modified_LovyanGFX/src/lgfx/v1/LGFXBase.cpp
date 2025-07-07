@@ -58,8 +58,13 @@ namespace lgfx
 
   void LGFXBase::setRotation(uint_fast8_t rotation)
   {
-    // Serial.printf("LGFXBase::setRotation(%d)\n", rotation);
-    if (_panel) _panel->setRotation(rotation);
+    Serial.printf("LGFXBase::setRotation(%d)\n", rotation);
+    if (_panel) {
+      Serial.printf("LGFXBase::setRotation() _panel->getRotation() = %d\n", _panel->getRotation());
+      _panel->setRotation(rotation);
+    }else {
+      Serial.println("LGFXBase::setRotation() _panel is nullptr");
+    }
     clearClipRect();
     clearScrollRect();
   }

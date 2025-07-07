@@ -1,0 +1,25 @@
+Entweder ich muss das Display mit anschliessen, also in-parallel, damit die SPI Kommandos gesendet werden, oder ich habe ein Capture Problem
+
+1) Ein Test Programm auf einem ESP32 aufbauen, dass einige GPIOs auf high und low zieht in Schleife, um das Capturen generell zu testen.
+2) Ein Test Programm auf einem ESP32 aufbauen, das einen SPI Bus nutzt und diesen Capturen
+3) Ein Display per SPI ansteuern und die Werte des Busses capturen, einmal parallel, einmal pur
+
+
+Generell: Setup, in dem das Display angeschlossen ist, ich aber mit einem Zwischenboard, alle Signale abgreifen kann.
+
+Von Clock auf Adapter und von Adapter auf 
+Breadboard
+-------------
+
+Messung kann auch ohne angedhlossenem Display erfolgen!
+
+Bitleitungen sind korrekt angegeben.
+
+
+Möglichkeiten:
+endian nicht korrekt (unwahrscheinlich -> testen im code)
+JPG und BMP "dekodierung" in RGB565 erfolgen nicht korrekt! -> prüfen mit dumps!
+
+Weiss ist gelblich, obwohl die gleiche Init Sequenz verwendet wird, wie bei der Orignal Firmware -> WAS ist anders??????? Orignal stellt Weiss korrekt dar...
+1) Gamma verändern bis weiss
+2) ???
