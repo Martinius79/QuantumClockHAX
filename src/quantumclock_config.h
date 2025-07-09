@@ -220,6 +220,24 @@ public:
       cfg.pin_d14 = LCD_R6; // R3
       cfg.pin_d15 = LCD_R7; // R4
 
+      // //LITTLE_ENDIAN
+      // cfg.pin_d0  = LCD_B7; // B4 (Blue MSB)
+      // cfg.pin_d1  = LCD_B6; // B3
+      // cfg.pin_d2  = LCD_B5; // B2
+      // cfg.pin_d3  = LCD_B4; // B1
+      // cfg.pin_d4  = LCD_B3; // B0 (Blue LSB)
+      // cfg.pin_d5  = LCD_G7; // G5 (Green MSB)
+      // cfg.pin_d6  = LCD_G6; // G4
+      // cfg.pin_d7  = LCD_G5; // G3
+      // cfg.pin_d8  = LCD_G4; // G2
+      // cfg.pin_d9  = LCD_G3; // G1
+      // cfg.pin_d10 = LCD_G2; // G0 (Green LSB)
+      // cfg.pin_d11 = LCD_R7; // R4 (Red MSB)
+      // cfg.pin_d12 = LCD_R6; // R3
+      // cfg.pin_d13 = LCD_R5; // R2
+      // cfg.pin_d14 = LCD_R4; // R1
+      // cfg.pin_d15 = LCD_R3; // R0 (Red LSB)
+
       // RGB Order - 16-bit parallel interface
       // cfg.pin_d0  = LCD_R3; // B0
       // cfg.pin_d1  = LCD_R4; // B1
