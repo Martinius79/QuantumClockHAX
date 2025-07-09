@@ -271,8 +271,11 @@ public:
       cfg.pclk_active_neg = false;
 
       // pixel clock frequency (in Hz)
+      cfg.freq_write = 12000000; // ~12,0MHz -> works for 960x420!!! -> stable picture!
       // cfg.freq_write = 13000000; // ~13MHz
-      cfg.freq_write  = 12000000; // default 16MHz, but can be adjusted based on your display's requirements -> not enough for 960x360@30Hz
+      // cfg.freq_write = 12500000; // ~12,5MHz
+      // cfg.freq_write = 14000000; // ~14,0MHz
+      // cfg.freq_write = 15000000; // ~15MHz
       // cfg.freq_write = 16651080; // ~16.65MHz
       // cfg.freq_write = 33302160; // ~33.3MHz
 
