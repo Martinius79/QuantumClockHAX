@@ -7,28 +7,28 @@
 
 LGFX lcd; // Your display instance
 const char* bit_names[16] = {
-  "B0", "B1", "B2", "B3", "B4", // Blau (Bits 0-4)
-  "G0", "G1", "G2", "G3", "G4", "G5", // Grün (Bits 5-10)
-  "R0", "R1", "R2", "R3", "R4"  // Rot (Bits 11-15)
+  "B0", "B1", "B2", "B3", "B4", // Blue (Bits 0-4)
+  "G0", "G1", "G2", "G3", "G4", "G5", // Green (Bits 5-10)
+  "R0", "R1", "R2", "R3", "R4"  // Red (Bits 11-15)
 };
 
 const char* bit_desc[16] = {
-  "Blau, sehr dunkel (niedrigstes Bit)",    // B0
-  "Blau, dunkler",                          // B1
-  "Blau, mittel",                           // B2
-  "Blau, hell",                             // B3
-  "Blau, maximal (kräftiges Blau)",         // B4
-  "Grün, sehr dunkel (niedrigstes Bit)",    // G0
-  "Grün, dunkler",                          // G1
-  "Grün, mittel",                           // G2
-  "Grün, hell",                             // G3
-  "Grün, sehr hell",                        // G4
-  "Grün, maximal (kräftiges Grün)",         // G5
-  "Rot, sehr dunkel (niedrigstes Bit)",     // R0
-  "Rot, dunkler",                           // R1
-  "Rot, mittel",                            // R2
-  "Rot, hell",                              // R3
-  "Rot, maximal (kräftiges Rot)"            // R4
+  "Blue, very dark (lowest bit)",    // B0
+  "Blue, darker",                   // B1
+  "Blue, medium",                   // B2
+  "Blue, bright",                   // B3
+  "Blue, maximum (strong blue)",    // B4
+  "Green, very dark (lowest bit)",  // G0
+  "Green, darker",                  // G1
+  "Green, medium",                  // G2
+  "Green, bright",                  // G3
+  "Green, very bright",             // G4
+  "Green, maximum (strong green)",  // G5
+  "Red, very dark (lowest bit)",    // R0
+  "Red, darker",                    // R1
+  "Red, medium",                    // R2
+  "Red, bright",                    // R3
+  "Red, maximum (strong red)"       // R4
 };
 
 
@@ -38,24 +38,24 @@ void setup() {
 
   Serial.println("Starting display...");
 
-  // --- GPIO-Test vor lcd.init() ---
-  // Serial.println("Starte GPIO-Test für Display-Datenleitungen...");
-  // // Liste aller verwendeten GPIOs für Datenleitungen (d0-d15)
+  // --- GPIO test before lcd.init() ---
+  // Serial.println("Starting GPIO test for display data lines...");
+  // // List of all used GPIOs for data lines (d0-d15)
   // int test_gpios[16] = {
-  //   12, 13, 14, 15, 16, 6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4 // Passe ggf. an deine aktuelle Zuordnung an!
+  //   12, 13, 14, 15, 16, 6, 7, 8, 9, 10, 11, 0, 1, 2, 3, 4 // Adjust to your current mapping if necessary!
   // };
   // for (int i = 0; i < 16; ++i) {
   //   int gpio = test_gpios[i];
-  //   if (gpio < 0) continue; // -1 oder NC überspringen
-  //   Serial.print("Setze GPIO "); Serial.print(gpio); Serial.println(" HIGH");
+  //   if (gpio < 0) continue; // Skip -1 or NC
+  //   Serial.print("Set GPIO "); Serial.print(gpio); Serial.println(" HIGH");
   //   pinMode(gpio, OUTPUT);
   //   digitalWrite(gpio, HIGH);
   //   delay(200);
-  //   Serial.print("Setze GPIO "); Serial.print(gpio); Serial.println(" LOW");
+  //   Serial.print("Set GPIO "); Serial.print(gpio); Serial.println(" LOW");
   //   digitalWrite(gpio, LOW);
   //   delay(200);
   // }
-  // Serial.println("GPIO-Test abgeschlossen. Starte Display-Init...");
+  // Serial.println("GPIO test completed. Starting display init...");
 
   lcd.init();
   Serial.println("Display initialized");
@@ -106,28 +106,28 @@ void setup() {
   lcd.drawJpgFile(SPIFFS, "/1.jpg", 0, 0); // Show image at top left
   delay(5000); // Wait to draw the image
 
-  lcd.fillScreen(TFT_BLACK);
-  Serial.println("Draw JPEG image...3.jpg");
-  lcd.drawJpgFile(SPIFFS, "/3.jpg", 0, 0); // Show image at top left
-  delay(5000); // Wait to draw the image
+  // lcd.fillScreen(TFT_BLACK);
+  // Serial.println("Draw JPEG image...3.jpg");
+  // lcd.drawJpgFile(SPIFFS, "/3.jpg", 0, 0); // Show image at top left
+  // delay(5000); // Wait to draw the image
   lcd.fillScreen(TFT_BLACK);
   Serial.println("Draw JPEG image...5.jpg");
   lcd.drawJpgFile(SPIFFS, "/5.jpg", 0, 0); // Show image at top left
   delay(5000); // Wait to draw the image
 
-  lcd.fillScreen(TFT_BLACK);
-  Serial.println("Draw JPEG image...6.jpg");
-  lcd.drawJpgFile(SPIFFS, "/6.jpg", 0, 0); // Show image at top left
-  delay(5000); // Wait to draw the image
+  // lcd.fillScreen(TFT_BLACK);
+  // Serial.println("Draw JPEG image...6.jpg");
+  // lcd.drawJpgFile(SPIFFS, "/6.jpg", 0, 0); // Show image at top left
+  // delay(5000); // Wait to draw the image
   lcd.fillScreen(TFT_BLACK);
   Serial.println("Draw JPEG image...7.jpg");
   lcd.drawJpgFile(SPIFFS, "/7.jpg", 0, 0); // Show image at top left
   delay(5000); // Wait to draw the image
 
-  lcd.fillScreen(TFT_BLACK);
-  Serial.println("Draw JPEG image...8.jpg");
-  lcd.drawJpgFile(SPIFFS, "/8.jpg", 0, 0); // Show image at top left
-  delay(5000); // Wait to draw the image
+  // lcd.fillScreen(TFT_BLACK);
+  // Serial.println("Draw JPEG image...8.jpg");
+  // lcd.drawJpgFile(SPIFFS, "/8.jpg", 0, 0); // Show image at top left
+  // delay(5000); // Wait to draw the image
   lcd.fillScreen(TFT_BLACK);
   Serial.println("Draw JPEG image...9.jpg");
   lcd.drawJpgFile(SPIFFS, "/9.jpg", 0, 0); // Show image at top left
@@ -148,13 +148,13 @@ void setup() {
   Serial.println("Write text to the display...");
   lcd.setTextSize(2);
   lcd.setTextColor(TFT_WHITE);
-  lcd.setCursor(300, 270);
+  lcd.setCursor(300, 240);
   lcd.println("Hello from the Quantum Clock!");
-  lcd.setCursor(380, 290);
+  lcd.setCursor(380, 260);
   lcd.println("GC9503CV Display");
-  lcd.setCursor(380, 310);
+  lcd.setCursor(380, 280);
   lcd.println("LovyanGFX Config");
-  lcd.setCursor(380, 330);
+  lcd.setCursor(390, 300);
   lcd.setTextSize(3);
   lcd.setTextColor(TFT_GREEN);
   lcd.println("SUCCESS!");
@@ -166,7 +166,7 @@ void setup() {
 void loop() {
   Serial.println("In loop...");
   
-  // --- Farbdurchlauf auskommentiert ---
+  // --- Color cycle commented out ---
 
   // Serial.println("Fill the screen with red...");  
   // lcd.fillScreen(TFT_RED);
@@ -218,12 +218,12 @@ void loop() {
 
   delay(2000); // Wait for the next iteration
 
-  // --- Bitmuster-Test für RGB565 Datenleitungen ---
+  // --- Bit pattern test for RGB565 data lines ---
   for (uint8_t bit = 0; bit < 16; ++bit) {
       uint16_t color = 1 << bit;
-      Serial.print("Bitmuster-Test: Nur Bit ");
+      Serial.print("Bit pattern test: Only bit ");
       Serial.print(bit);
-      Serial.print(" gesetzt (0x");
+      Serial.print(" set (0x");
       Serial.print(color, HEX);
       Serial.print(") - ");
       Serial.print(bit_names[bit]);
@@ -232,27 +232,27 @@ void loop() {
       lcd.fillScreen(color);
       auto* panel = static_cast<lgfx::v1::Panel_GC9503_Quantum_Clock*>(lcd.getPanel());
       panel->dumpFrameBuffer(2, 8);
-      delay(300); // Zeit zum Beobachten
+      delay(300); // Time to observe
   }
-  Serial.println("Bitmuster-Test abgeschlossen.");
+  Serial.println("Bit pattern test completed.");
 //   // delay(3000);
 
-  // --- Test für "volle" Farben (nur ein Farbkanal voll, Rest 0) ---
+  // --- Test for "full" colors (only one color channel full, rest 0) ---
   struct {
     const char* name;
     uint16_t color;
   } color_tests[] = {
-    {"Voll Rot (0xF800)", 0xF800},
-    {"Voll Grün (0x07E0)", 0x07E0},
-    {"Voll Blau (0x001F)", 0x001F},
-    {"Weiß (0xFFFF)", 0xFFFF},
-    {"Schwarz (0x0000)", 0x0000},
-    {"Gelb (0xFFE0)", 0xFFE0},
+    {"Full Red (0xF800)", 0xF800},
+    {"Full Green (0x07E0)", 0x07E0},
+    {"Full Blue (0x001F)", 0x001F},
+    {"White (0xFFFF)", 0xFFFF},
+    {"Black (0x0000)", 0x0000},
+    {"Yellow (0xFFE0)", 0xFFE0},
     {"Cyan (0x07FF)", 0x07FF},
     {"Magenta (0xF81F)", 0xF81F},
   };
   for (auto& t : color_tests) {
-    Serial.print("Fülle mit Farbe: ");
+    Serial.print("Fill with color: ");
     Serial.print(t.name);
     Serial.print(" (0x");
     Serial.print(t.color, HEX);
@@ -260,7 +260,7 @@ void loop() {
     lcd.fillScreen(t.color);
     delay(2000);
   }
-  Serial.println("Farbtest abgeschlossen.");
+  Serial.println("Color test completed.");
   // delay(3000);
 
 
