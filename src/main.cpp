@@ -1,9 +1,12 @@
 #include <Arduino.h>
 #include <SPIFFS.h>
 
-#include "quantumclock_config.h" // Your config file
+// #include "quantumclock_config.h" // Your config file
+#include "tryout_config.h" // Your tryout config file
 
 #include "lgfx/v1/platforms/esp32s3/Panel_RGB.hpp"
+
+void printRAMSize();
 
 LGFX lcd; // Your display instance
 const char* bit_names[16] = {
@@ -38,6 +41,18 @@ void setup() {
 
   Serial.println("Starting display...");
 
+  printRAMSize();
+
+  auto data = (uint8_t*)ps_malloc(800111);
+  if (!data) {
+    Serial.println("ERROR: PSRAM allocation for framebuffer failed!");
+  }
+  Serial.println("SUCCESS: set frame buffer: " + String((uintptr_t)data, HEX));
+  printRAMSize();
+  // deallocate PSRAM
+  free(data);
+  Serial.println("PSRAM deallocated");
+  printRAMSize();
   // --- GPIO test before lcd.init() ---
   // Serial.println("Starting GPIO test for display data lines...");
   // // List of all used GPIOs for data lines (d0-d15)
@@ -60,7 +75,7 @@ void setup() {
   lcd.init();
   Serial.println("Display initialized");
   delay(1000); // Wait after display initialization
-  
+  printRAMSize();
   // Not implemented!
   // Serial.println("Activating Swap Bytes...");  
   // lcd.setSwapBytes(true); // Set byte order to big-endian (default is little-endian)
@@ -235,7 +250,7 @@ void loop() {
       delay(300); // Time to observe
   }
   Serial.println("Bit pattern test completed.");
-//   // delay(3000);
+  // delay(3000);
 
   // --- Test for "full" colors (only one color channel full, rest 0) ---
   struct {
@@ -262,6 +277,16 @@ void loop() {
   }
   Serial.println("Color test completed.");
   // delay(3000);
+}
 
+void printRAMSize() {
 
+// #ifdef DEBUG_OUTPUT_RAM
+  Serial.println("ESP32 RAM Info:");  
+  Serial.printf("Total RAM: %u bytes\n", ESP.getHeapSize());
+  Serial.printf("Free Heap: %u bytes\n", ESP.getFreeHeap());
+  // Serial.printf("Free Sketch: %u bytes\n", ESP.getFreeSketchSpace());
+  Serial.printf("PSRAM Size: %u bytes\n", ESP.getPsramSize());
+  Serial.printf("Free PSRAM: %u bytes\n", ESP.getFreePsram());
+// #endif
 }

@@ -218,18 +218,19 @@ namespace lgfx
       _gpio_pin_sig(_cfg.pin_pclk, sigs->pclk_sig);
     }
 
-    // Serial.println("  set LCD_CAM peripheral: ");
-    // periph_module_enable(lcd_periph_signals.panels[_cfg.port].module);
+    Serial.println("  set LCD_CAM peripheral: ");
+    periph_module_enable(lcd_periph_signals.panels[_cfg.port].module);
+    Serial.println("  periph_module_enable done");
     _dma_ch = search_dma_out_ch(SOC_GDMA_TRIG_PERIPH_LCD0);
     if (_dma_ch < 0)
     {
       esp_lcd_del_i80_bus(_i80_bus);
       ESP_LOGE("Bus_RGB", "DMA channel not found...");
       return false;
-    }
-    // Serial.println("  _dma_ch: " + String(_dma_ch));
+    }    
+    Serial.println("  _dma_ch: " + String(_dma_ch));
 
-    // Serial.println("  set GDMA mode: ");
+    Serial.println("  set GDMA mode: ");
     GDMA.channel[_dma_ch].out.peri_sel.sel = SOC_GDMA_TRIG_PERIPH_LCD0;
 
     typeof(GDMA.channel[0].out.conf0) conf0;
@@ -239,19 +240,30 @@ namespace lgfx
     conf0.out_data_burst_en = 1;
     GDMA.channel[_dma_ch].out.conf0.val = conf0.val;
 
+    Serial.println("  GDMA channel conf0 set");
     typeof(GDMA.channel[0].out.conf1) conf1;
     conf1.val = 0;
     conf1.out_ext_mem_bk_size = GDMA_LL_EXT_MEM_BK_SIZE_64B;
+    Serial.println("  GDMA channel conf1: ");
     GDMA.channel[_dma_ch].out.conf1.val = conf1.val;
-
+    Serial.println("  GDMA channel conf1 set");
     size_t fb_len = (_cfg.panel->width() * pixel_bytes) * _cfg.panel->height();
+    Serial.println("  fb_len: " + String(fb_len));
     auto data = (uint8_t*)heap_alloc_psram(fb_len);
+    if (!data) {
+      Serial.println("ERROR: PSRAM allocation for framebuffer failed!");
+      return false; // oder geeignete Fehlerbehandlung
+    }
+    Serial.println("  set frame buffer: " + String((uintptr_t)data, HEX));
     _frame_buffer = data;
     static constexpr size_t MAX_DMA_LEN = (4096-64);
+    Serial.println("  set DMA descriptor: ");
     size_t dmadesc_size = (fb_len - 1) / MAX_DMA_LEN + 1;
     auto dmadesc = (dma_descriptor_t*)heap_caps_malloc(sizeof(dma_descriptor_t) * dmadesc_size, MALLOC_CAP_DMA);
+    Serial.println("  set DMA descriptor: " + String((uintptr_t)dmadesc, HEX));
     _dmadesc = dmadesc;
 
+    Serial.println("  set DMA buffer: ");
     size_t len = fb_len;
     while (len > MAX_DMA_LEN)
     {
@@ -262,6 +274,8 @@ namespace lgfx
       dmadesc->next = dmadesc + 1;
       dmadesc++;
     }
+    // Last descriptor
+    Serial.println("  last DMA descriptor: ");
     *(uint32_t*)dmadesc = ((len + 3) & ( ~3 )) | len << 12 | 0xC0000000;
     dmadesc->buffer = (uint8_t *)data;
     dmadesc->next = _dmadesc;
@@ -269,7 +283,7 @@ namespace lgfx
     GDMA.channel[_dma_ch].out.link.start = 1;
     //////////////////////////////////////////////
 
-    // Serial.println("  set DMA mem: ");
+    Serial.println("  set DMA mem: ");
     memcpy(&_dmadesc_restart, _dmadesc, sizeof(_dmadesc_restart));
     int skip_bytes = (GDMA_LL_L2FIFO_BASE_SIZE + 1) * pixel_bytes;
     auto p = (uint8_t*)(_dmadesc_restart.buffer);
@@ -278,6 +292,7 @@ namespace lgfx
     _dmadesc_restart.dw0.size -= skip_bytes;
 
 
+    Serial.println("  set DMA restart: ");
     uint32_t hsw = _cfg.hsync_pulse_width;
     uint32_t hbp = _cfg.hsync_back_porch;
     uint32_t active_width = _cfg.panel->width();
@@ -304,7 +319,7 @@ namespace lgfx
     lcd_clock.clk_en = true;
     dev->lcd_clock.val = lcd_clock.val;
 
-    // Serial.println("after lcd clock set");
+    Serial.println("after lcd clock set");
 
     typeof(dev->lcd_user) lcd_user;
     lcd_user.val = 0;
@@ -336,6 +351,7 @@ namespace lgfx
     // lcd_misc.lcd_vbk_cyclelen = 0;
     dev->lcd_misc.val = lcd_misc.val;
 
+    Serial.println("  set lcd_misc: " + String(lcd_misc.val, HEX));
     typeof(dev->lcd_ctrl) lcd_ctrl;
     lcd_ctrl.lcd_hb_front = hbp + hsw - 1;
     lcd_ctrl.lcd_va_height = active_height - 1;
@@ -343,12 +359,14 @@ namespace lgfx
     lcd_ctrl.lcd_rgb_mode_en = true;
     dev->lcd_ctrl.val = lcd_ctrl.val;
 
+    Serial.println("  set lcd_ctrl: " + String(lcd_ctrl.val, HEX));
     typeof(dev->lcd_ctrl1) lcd_ctrl1;
     lcd_ctrl1.lcd_vb_front = vbp + vsw - 1;
     lcd_ctrl1.lcd_ha_width = active_width - 1;
     lcd_ctrl1.lcd_ht_width = hsw + hbp + active_width + hfp - 1;
     dev->lcd_ctrl1.val = lcd_ctrl1.val;
 
+    Serial.println("  set lcd_ctrl1: " + String(lcd_ctrl1.val, HEX));
     typeof(dev->lcd_ctrl2) lcd_ctrl2;
     lcd_ctrl2.val = 0;
     lcd_ctrl2.lcd_vsync_width = vsw - 1;
@@ -360,7 +378,7 @@ namespace lgfx
     lcd_ctrl2.lcd_de_idle_pol = _cfg.de_idle_high;
     dev->lcd_ctrl2.val = lcd_ctrl2.val;
 
-    // Serial.println("  set ddd: ");
+    Serial.println("  set ddd: ");
 
     dev->lc_dma_int_ena.val = 1;
 
@@ -372,19 +390,19 @@ namespace lgfx
       auto sigs = &lcd_periph_signals.panels[_cfg.port];
 #endif
 
-  // Serial.println("  set intr: ");
+    Serial.println("  set intr: ");
     esp_intr_alloc_intrstatus(sigs->irq_id, isr_flags,
                                    (uint32_t)&dev->lc_dma_int_st,
                                     LCD_LL_EVENT_VSYNC_END, lcd_default_isr_handler, this, &_intr_handle);
-    // Serial.println(" after intr alloc");
-    // Serial.println(" enable intr: ");
+    Serial.println(" after intr alloc");
+    Serial.println(" enable intr: ");
     esp_intr_enable(_intr_handle);
-    // Serial.println(" after intr enable");
+    Serial.println(" after intr enable");
 
     dev->lcd_user.lcd_update = 1;
     dev->lcd_user.lcd_start = 1;
 
-    // Serial.println(" after lcd_user set");
+    Serial.println(" after lcd_user set");
     return true;
   }
 
