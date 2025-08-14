@@ -208,22 +208,32 @@ public:
       cfg.pclk_active_neg = false;
 
       // pixel clock frequency (in Hz)
-      cfg.freq_write = 12000000; // ~12,0MHz -> works for 960x420!!! -> stable picture!
+      // cfg.freq_write = 2000000; // ~2,0MHz
+      // cfg.freq_write = 12000000; // ~12,0MHz -> works for 960x420!!! -> stable picture!
       // cfg.freq_write = 13000000; // ~13MHz
       // cfg.freq_write = 12500000; // ~12,5MHz
       // cfg.freq_write = 14000000; // ~14,0MHz
       // cfg.freq_write = 15000000; // ~15MHz
-      // cfg.freq_write = 16651080; // ~16.65MHz
+      cfg.freq_write = 16651080; // ~16.65MHz
       // cfg.freq_write = 33302160; // ~33.3MHz
 
-      // working, but when drawing a lot of pixels, the display is flickering and glitching
-      cfg.hsync_front_porch = 20;
-      cfg.hsync_pulse_width = 8;
-      cfg.hsync_back_porch = 20;
+      // TESTing old values
+      cfg.hsync_front_porch = 8;
+      cfg.hsync_pulse_width = 10;
+      cfg.hsync_back_porch = 50;
 
-      cfg.vsync_front_porch = 32;
-      cfg.vsync_pulse_width = 2;
+      cfg.vsync_front_porch = 8;
+      cfg.vsync_pulse_width = 10;
       cfg.vsync_back_porch = 20;
+
+      // values from the chinese manufacturer but for MIPI
+      // cfg.hsync_front_porch = 20;
+      // cfg.hsync_pulse_width = 8;
+      // cfg.hsync_back_porch = 20;
+
+      // cfg.vsync_front_porch = 32;
+      // cfg.vsync_pulse_width = 2;
+      // cfg.vsync_back_porch = 20;
 
       _bus_instance.config(cfg);
     }

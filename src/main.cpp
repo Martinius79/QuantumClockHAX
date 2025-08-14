@@ -101,52 +101,52 @@ void setup() {
   }
 
   // drawJpgFile() requires a JPEG file in SPIFFS
-  lcd.fillScreen(TFT_BLACK);
-  Serial.println("Draw JPEG image...0");
-  lcd.drawJpgFile(SPIFFS, "/0.jpg", 0, 0); // Show image at top left
-  delay(5000); // Wait to see the image
+  // lcd.fillScreen(TFT_BLACK);
+  // Serial.println("Draw JPEG image...0");
+  // lcd.drawJpgFile(SPIFFS, "/0.jpg", 0, 0); // Show image at top left
+  // delay(5000); // Wait to see the image
 
   // lcd.fillScreen(TFT_BLACK);
   // Serial.println("Draw BMP image...24bit - 2");
   // lcd.drawBmpFile(SPIFFS, "/2.bmp", 0, 0); // Show image at top left
   // delay(5000); // Wait to draw the image
 
-  lcd.fillScreen(TFT_BLACK);
-  Serial.println("Draw BMP image...16bit - 4");
-  lcd.drawBmpFile(SPIFFS, "/4.bmp", 0, 0); // Show image at top left
-  delay(5000); // Wait to draw the image
+  // lcd.fillScreen(TFT_BLACK);
+  // Serial.println("Draw BMP image...16bit - 4");
+  // lcd.drawBmpFile(SPIFFS, "/4.bmp", 0, 0); // Show image at top left
+  // delay(5000); // Wait to draw the image
 
   lcd.fillScreen(TFT_BLACK);
   Serial.println("Draw JPEG image...1");
   lcd.drawJpgFile(SPIFFS, "/1.jpg", 0, 0); // Show image at top left
   delay(5000); // Wait to draw the image
 
+  // // lcd.fillScreen(TFT_BLACK);
+  // // Serial.println("Draw JPEG image...3.jpg");
+  // // lcd.drawJpgFile(SPIFFS, "/3.jpg", 0, 0); // Show image at top left
+  // // delay(5000); // Wait to draw the image
   // lcd.fillScreen(TFT_BLACK);
-  // Serial.println("Draw JPEG image...3.jpg");
-  // lcd.drawJpgFile(SPIFFS, "/3.jpg", 0, 0); // Show image at top left
+  // Serial.println("Draw JPEG image...5.jpg");
+  // lcd.drawJpgFile(SPIFFS, "/5.jpg", 0, 0); // Show image at top left
   // delay(5000); // Wait to draw the image
-  lcd.fillScreen(TFT_BLACK);
-  Serial.println("Draw JPEG image...5.jpg");
-  lcd.drawJpgFile(SPIFFS, "/5.jpg", 0, 0); // Show image at top left
-  delay(5000); // Wait to draw the image
 
+  // // lcd.fillScreen(TFT_BLACK);
+  // // Serial.println("Draw JPEG image...6.jpg");
+  // // lcd.drawJpgFile(SPIFFS, "/6.jpg", 0, 0); // Show image at top left
+  // // delay(5000); // Wait to draw the image
   // lcd.fillScreen(TFT_BLACK);
-  // Serial.println("Draw JPEG image...6.jpg");
-  // lcd.drawJpgFile(SPIFFS, "/6.jpg", 0, 0); // Show image at top left
+  // Serial.println("Draw JPEG image...7.jpg");
+  // lcd.drawJpgFile(SPIFFS, "/7.jpg", 0, 0); // Show image at top left
   // delay(5000); // Wait to draw the image
-  lcd.fillScreen(TFT_BLACK);
-  Serial.println("Draw JPEG image...7.jpg");
-  lcd.drawJpgFile(SPIFFS, "/7.jpg", 0, 0); // Show image at top left
-  delay(5000); // Wait to draw the image
 
+  // // lcd.fillScreen(TFT_BLACK);
+  // // Serial.println("Draw JPEG image...8.jpg");
+  // // lcd.drawJpgFile(SPIFFS, "/8.jpg", 0, 0); // Show image at top left
+  // // delay(5000); // Wait to draw the image
   // lcd.fillScreen(TFT_BLACK);
-  // Serial.println("Draw JPEG image...8.jpg");
-  // lcd.drawJpgFile(SPIFFS, "/8.jpg", 0, 0); // Show image at top left
+  // Serial.println("Draw JPEG image...9.jpg");
+  // lcd.drawJpgFile(SPIFFS, "/9.jpg", 0, 0); // Show image at top left
   // delay(5000); // Wait to draw the image
-  lcd.fillScreen(TFT_BLACK);
-  Serial.println("Draw JPEG image...9.jpg");
-  lcd.drawJpgFile(SPIFFS, "/9.jpg", 0, 0); // Show image at top left
-  delay(5000); // Wait to draw the image
  
   // Serial.println("Brightness: " + String(lcd.getBrightness())); // Query brightness (optional)  
   // lcd.setBrightness(255); // Set brightness to maximum
@@ -237,22 +237,22 @@ void loop() {
   delay(2000); // Wait for the next iteration
 
   // --- Bit pattern test for RGB565 data lines ---
-  for (uint8_t bit = 0; bit < 16; ++bit) {
-      uint16_t color = 1 << bit;
-      Serial.print("Bit pattern test: Only bit ");
-      Serial.print(bit);
-      Serial.print(" set (0x");
-      Serial.print(color, HEX);
-      Serial.print(") - ");
-      Serial.print(bit_names[bit]);
-      Serial.print(" - ");
-      Serial.println(bit_desc[bit]);
-      lcd.fillScreen(color);
-      auto* panel = static_cast<lgfx::v1::Panel_GC9503_Quantum_Clock*>(lcd.getPanel());
-      panel->dumpFrameBuffer(2, 8);
-      delay(300); // Time to observe
-  }
-  Serial.println("Bit pattern test completed.");
+  // for (uint8_t bit = 0; bit < 16; ++bit) {
+  //     uint16_t color = 1 << bit;
+  //     Serial.print("Bit pattern test: Only bit ");
+  //     Serial.print(bit);
+  //     Serial.print(" set (0x");
+  //     Serial.print(color, HEX);
+  //     Serial.print(") - ");
+  //     Serial.print(bit_names[bit]);
+  //     Serial.print(" - ");
+  //     Serial.println(bit_desc[bit]);
+  //     lcd.fillScreen(color);
+  //     auto* panel = static_cast<lgfx::v1::Panel_GC9503_Quantum_Clock*>(lcd.getPanel());
+  //     panel->dumpFrameBuffer(2, 8);
+  //     delay(300); // Time to observe
+  // }
+  // Serial.println("Bit pattern test completed.");
   // delay(3000);
 
   // --- Test for "full" colors (only one color channel full, rest 0) ---
