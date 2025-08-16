@@ -22,7 +22,7 @@ static const int VSW_LIST[] = { LCD_VSYNC_PULSE_WIDTH }; // vsync pulse variants
 static const int VBP_LIST[] = { LCD_VSYNC_BACK_PORCH  }; // vertical back porch sweep
 
 // Pixel clock candidates (Hz)
-static const uint32_t PCLK_LIST[] = { 2000000 };
+static const uint32_t PCLK_LIST[] = { 12000000 };
 // Delay between reconfigurations (ms)
 static const uint32_t AUTOSCAN_INTERVAL_MS = 100; // allow visual inspection
 
@@ -132,7 +132,12 @@ void setup() {
   Serial.println("Set display rotation...");
   if (lcd.width() < lcd.height())
   {
+    Serial.println("Display is in portrait mode (w<h), setting rotation to 1...");
     lcd.setRotation(lcd.getRotation() ^ 1);
+  }else
+  {
+    Serial.println("Display is in landscape mode (w>=h), setting rotation to 0...");
+    lcd.setRotation(lcd.getRotation() ^ 0);
   }
 
   // drawJpgFile() requires a JPEG file in SPIFFS
@@ -151,7 +156,7 @@ void setup() {
   // lcd.drawBmpFile(SPIFFS, "/4.bmp", 0, 0); // Show image at top left
   // delay(5000); // Wait to draw the image
 
-  // lcd.fillScreen(TFT_BLACK);
+  lcd.fillScreen(TFT_BLACK);
   // Serial.println("Draw JPEG image...1");
   // lcd.drawJpgFile(SPIFFS, "/1.jpg", 0, 0); // Show image at top left
   // delay(5000); // Wait to draw the image
@@ -169,10 +174,10 @@ void setup() {
   // // Serial.println("Draw JPEG image...6.jpg");
   // // lcd.drawJpgFile(SPIFFS, "/6.jpg", 0, 0); // Show image at top left
   // // delay(5000); // Wait to draw the image
-  lcd.fillScreen(TFT_BLACK);
-  Serial.println("Draw JPEG image...7.jpg");
-  lcd.drawJpgFile(SPIFFS, "/7.jpg", 0, 0); // Show image at top left
-  delay(1000); // Wait to draw the image
+  // lcd.fillScreen(TFT_BLACK);
+  // Serial.println("Draw JPEG image...7.jpg");
+  // lcd.drawJpgFile(SPIFFS, "/7.jpg", 0, 0); // Show image at top left
+  // delay(1000); // Wait to draw the image
 
   // // lcd.fillScreen(TFT_BLACK);
   // // Serial.println("Draw JPEG image...8.jpg");
@@ -215,8 +220,8 @@ void setup() {
   // lcd.setTextColor(TFT_WHITE);
   // lcd.setCursor(0, 0);
   // lcd.println("Hello from the Quantum Clock!");
-  // lcd.setCursor(20, 20);
-  // lcd.println("GC9503CV Display");
+  lcd.setCursor(20, 20);
+  lcd.println("GC9503 Display");
   // lcd.setCursor(30, 20);
   // lcd.println("LovyanGFX Config");
   // lcd.setCursor(40, 40);

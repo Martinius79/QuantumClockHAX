@@ -73,9 +73,10 @@
 #endif
 
 #if USE_DATASHEET_RESOLUTION
-  #define LCD_HRES        360  // Active width (columns)
+  #define LCD_HRES        480  // Active width (columns)
   #define LCD_VRES        960  // Active height (rows)
-  #define LCD_HRES_PHYS   360
+  // #define LCD_HRES_PHYS   450 // -> different
+  #define LCD_HRES_PHYS   360 // -> 
   #define LCD_VRES_PHYS   960
 #else
   // Legacy experimental values
