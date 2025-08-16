@@ -649,6 +649,8 @@ namespace lgfx
     {
       static constexpr const uint8_t list0[] = 
       {
+        0x11, CMD_INIT_DELAY, 200,              // Sleep Out, then 200ms delay
+        
         0xF0, 5, 0x55, 0xAA, 0x52, 0x08, 0x00, // Command Page Select (Page 0)
         0xF6, 2, 0x5A, 0x87,                   // Interface/Power Control
         0xC1, 1, 0x3F,                         // Display Control (Source Output, Gate Output, Scan Direction etc.)
@@ -676,16 +678,38 @@ namespace lgfx
         0x82, 2, 0x00, 0x00,                   // Unknown, probably Power/Timing
         0x80, 1, 0x54,                         // Unknown, probably Power/Timing
         0xB1, 1, 0x13, // Display Function Control
-        // 0x33 = 0b 00110011 -> BGR-Mode, scan direction inverted
+        // 0x33 = 0b 00110011 -> BGR-Mode, column inversion, GS and SS direction inverted
         //      Bits 01234567
-        // 0x10 = 0b 00010000 -> RGB-Mode, scan direction normal
-        // 0x13 = 0b 00010011 -> RGB-Mode, scan direction inverted
+        // 0x10 = 0b 00010000 -> RGB-Mode, column inversion, GS and SS direction normal
+        // 0x11 = 0b 00010001 -> RGB-Mode, column inversion, GS direction normal, SS direction inverted
+        // 0x12 = 0b 00010010 -> RGB-Mode, column inversion, GS direction inverted, SS direction normal
+        // 0x13 = 0b 00010011 -> RGB-Mode, column inversion, GS and SS direction inverted
+        // 0x33 = 0b 00110011 -> BGR-Mode, column inversion, GS and SS direction inverted
+        // 0x00 = 0b 00000000 -> RGB-Mode, 1-dot inversion, GS and SS direction normal
+        // 0x01 = 0b 00000001 -> RGB-Mode, 1-dot inversion, GS direction normal, SS direction inverted
+        // 0x02 = 0b 00000010 -> RGB-Mode, 1-dot inversion, GS direction inverted, SS direction normal
+        // 0x03 = 0b 00000011 -> RGB-Mode, 1-dot inversion, GS and SS direction inverted
+        // 0x04 = 0b 00000100 -> RGB-Mode, 2-dot inversion, GS and SS direction normal
+        // 0x05 = 0b 00000101 -> RGB-Mode, 2-dot inversion, GS direction normal, SS direction inverted
+        // 0x06 = 0b 00000110 -> RGB-Mode, 2-dot inversion, GS direction inverted, SS direction normal
+        // 0x07 = 0b 00000111 -> RGB-Mode, 2-dot inversion, GS and SS direction inverted
+        // 0x0A = 0b 00001010 -> RGB-Mode, 3-dot inversion, GS direction inverted, SS direction normal
+        // 0x0B = 0b 00001011 -> RGB-Mode, 3-dot inversion, GS and SS direction inverted
+        // 0x0C = 0b 00001100 -> RGB-Mode, 4-dot inversion, GS and SS direction normal
+        // 0x0D = 0b 00001101 -> RGB-Mode, 4-dot inversion, GS direction normal, SS direction inverted
+        // 0x0E = 0b 00001110 -> RGB-Mode, 4-dot inversion, GS direction inverted, SS direction normal
+        // 0x0F = 0b 00001111 -> RGB-Mode, 4-dot inversion, GS and SS direction inverted
         // Bit 7 (1): SS - Source scan direction (1 = reverse, 0 = normal)
         // Bit 6 (1): GS - Gate scan direction (1 = reverse, 0 = normal)
-        // Bit 3-5 (3)- Inversion Mode for Source Driver
+        // Bit 3-5 (3)- Inversion Mode for Source Driver ->
+        //              000 = 1-dot inversion
+        //              001 = 2-dot inversion
+        //              010 = 3-dot inversion
+        //              011 = 4-dot inversion
+        //              100 = column inversion
         // Bit 2 (1) 0=RGB color info mode, 1=BGR color info mode
         // Bit 1 (1): reserved - 0
-        // Bit 0 (1): 1 = enter into Display Inversion On mode, 0 = recover from Display Inversion On mode???
+        // Bit 0 (1): 1 = enter into Display Inversion On mode, 0 = recover from Display Inversion On mode??? -> Inversion of all pixel values??? white is black, black is white
         // Bits 7,6,3,2 (0): Reserved or not used
 
         0x7A, 2, 0x0F, 0x13,                   // Unknown, probably Gamma/Timing
