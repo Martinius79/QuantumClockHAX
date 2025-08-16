@@ -61,11 +61,49 @@
 // --- Assigned defines for Arduino/ESP-IDF ---
 // Use the actual GPIO numbers of the ESP32-S3, as defined in the Arduino core.
 
-#define LCD_HRES  960 // Horizontal resolution of the GC9503CV driver (width)
-#define LCD_VRES  360 // Vertical resolution of the GC9503CV driver (height)
+// ---------------------------------------------------------------------------
+// According to datasheet snippet: Dot: 360(RGB) * 960 (portrait).
+// That normally means 360 active columns x 960 active rows (tall display).
+// Previously we experimented with a swapped 480x960 logical size to obtain a stable picture.
+// Enable USE_DATASHEET_RESOLUTION to drive the native 360x960 coordinate system.
+// NOTE: Porch timings may need retuning; start with conservative values.
+// ---------------------------------------------------------------------------
+#ifndef USE_DATASHEET_RESOLUTION
+#define USE_DATASHEET_RESOLUTION 1
+#endif
 
-#define LCD_HRES_PHYS  960 // Physical horizontal resolution of the display (width)
-#define LCD_VRES_PHYS  360 // Physical vertical resolution of the display (height)
+#if USE_DATASHEET_RESOLUTION
+  #define LCD_HRES        360  // Active width (columns)
+  #define LCD_VRES        960  // Active height (rows)
+  #define LCD_HRES_PHYS   360
+  #define LCD_VRES_PHYS   960
+#else
+  // Legacy experimental values
+  #define LCD_HRES        480
+  #define LCD_VRES        960
+  #define LCD_HRES_PHYS   480
+  #define LCD_VRES_PHYS   960
+#endif
+
+// --- Default porch/pulse parameters (can be tuned) ---
+
+// #define LCD_HSYNC_FRONT_PORCH 8
+// #define LCD_HSYNC_PULSE_WIDTH 10
+// #define LCD_HSYNC_BACK_PORCH 50
+
+// #define LCD_VSYNC_FRONT_PORCH 8
+// #define LCD_VSYNC_PULSE_WIDTH 10
+// #define LCD_VSYNC_BACK_PORCH 20
+
+
+#define LCD_HSYNC_FRONT_PORCH 20
+#define LCD_HSYNC_PULSE_WIDTH 8
+#define LCD_HSYNC_BACK_PORCH 20
+
+#define LCD_VSYNC_FRONT_PORCH 32
+#define LCD_VSYNC_PULSE_WIDTH 2
+#define LCD_VSYNC_BACK_PORCH 20
+
 
 // Red data pins (5 bits for RGB565, derived from R3-R7 of RGB888)
 #define LCD_R0    GPIO_NUM_1 // FPC Pin 5 (ESP32 - GPIO0 - ESP pin 5) - Red LSB
@@ -130,17 +168,22 @@ public:
 
   LGFX(void)
   {
-    { // panel settings - resolution
+    { // panel settings - resolution & memory layout
       auto cfg = _panel_instance.config();
-
-      // Set the physical resolution of the panel
-      // I have NO IDEA why VRES has to be 420! // But it works with 420, otherwise the display is showing stripes!
-      cfg.panel_width  = LCD_VRES_PHYS;
-      cfg.panel_height = LCD_HRES_PHYS;
-      
-      // Set the memory resolution of the panel (this is the resolution of the framebuffer) "full" size of the display driver GC9503CV is 960x480, so we use that
-      cfg.memory_width  = LCD_VRES;
-      cfg.memory_height = LCD_HRES;
+  // For portrait orientation we keep (width = LCD_HRES, height = LCD_VRES).
+  // If you want landscape, you can swap and set a rotation later.
+#if USE_DATASHEET_RESOLUTION
+  cfg.panel_width  = LCD_HRES_PHYS;  // 360
+  cfg.panel_height = LCD_VRES_PHYS;  // 960
+  cfg.memory_width  = LCD_HRES;      // Framebuffer width
+  cfg.memory_height = LCD_VRES;      // Framebuffer height
+#else
+  // Legacy experimental (swapped) configuration kept for reference.
+  cfg.panel_width  = LCD_VRES_PHYS;
+  cfg.panel_height = LCD_HRES_PHYS;
+  cfg.memory_width  = LCD_VRES;
+  cfg.memory_height = LCD_HRES;
+#endif
 
       cfg.offset_x = 0;
       cfg.offset_y = 0;
@@ -208,23 +251,32 @@ public:
       cfg.pclk_active_neg = false;
 
       // pixel clock frequency (in Hz)
-      // cfg.freq_write = 2000000; // ~2,0MHz
-      // cfg.freq_write = 12000000; // ~12,0MHz -> works for 960x420!!! -> stable picture!
+  // cfg.freq_write = 2000000; // ~2,0MHz
+#if USE_DATASHEET_RESOLUTION
+  // Pixel clock guidance:
+  // FrameRate ≈ PCLK / ((Hactive+Hblank)*(Vactive+Vblank))
+  // With Hblank ≈ (front+back+hsync) = 8+50+10=68  => Htotal=428
+  // and Vblank ≈ 8+20+10=38 => Vtotal=998
+  // At 12 MHz => ~12,000,000 / (428*998) ≈ 28 fps.
+  // Increase freq_write to ~24-26 MHz for ~55-60 fps once stable.
+  cfg.freq_write = 12000000; // conservative start
+#else
+  cfg.freq_write = 12000000; // ~12,0MHz -> works for legacy 960x420 test
       // cfg.freq_write = 13000000; // ~13MHz
       // cfg.freq_write = 12500000; // ~12,5MHz
       // cfg.freq_write = 14000000; // ~14,0MHz
       // cfg.freq_write = 15000000; // ~15MHz
-      cfg.freq_write = 16651080; // ~16.65MHz
+      // cfg.freq_write = 16651080; // ~16.65MHz
       // cfg.freq_write = 33302160; // ~33.3MHz
-
+#endif
       // TESTing old values
-      cfg.hsync_front_porch = 8;
-      cfg.hsync_pulse_width = 10;
-      cfg.hsync_back_porch = 50;
+  cfg.hsync_front_porch = LCD_HSYNC_FRONT_PORCH;
+  cfg.hsync_pulse_width = LCD_HSYNC_PULSE_WIDTH;
+  cfg.hsync_back_porch  = LCD_HSYNC_BACK_PORCH;
 
-      cfg.vsync_front_porch = 8;
-      cfg.vsync_pulse_width = 10;
-      cfg.vsync_back_porch = 20;
+  cfg.vsync_front_porch = LCD_VSYNC_FRONT_PORCH;
+  cfg.vsync_pulse_width = LCD_VSYNC_PULSE_WIDTH;
+  cfg.vsync_back_porch  = LCD_VSYNC_BACK_PORCH;
 
       // values from the chinese manufacturer but for MIPI
       // cfg.hsync_front_porch = 20;

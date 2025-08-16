@@ -59,6 +59,20 @@ namespace lgfx
     void writeCommand(uint32_t, uint_fast8_t) override;
     void writeData(uint32_t, uint_fast8_t) override;
 
+  // --- Runtime command helpers (custom) ---
+  // Send an arbitrary command + optional payload to the panel after init.
+  // cmd        : command byte (e.g. 0x28 Display OFF)
+  // data/len   : pointer + number of data bytes (can be nullptr/0)
+  // post_delay : optional delay in ms after raising CS (some commands need it)
+  bool sendCommand(uint8_t cmd, const uint8_t* data = nullptr, size_t len = 0, uint32_t post_delay = 0);
+  inline bool sendCommand(uint8_t cmd, uint32_t post_delay) { return sendCommand(cmd, nullptr, 0, post_delay); }
+
+  // Convenience wrappers.
+  void displayOn();   // 0x29
+  void displayOff();  // 0x28
+  void sleepIn();     // 0x10 (enter sleep) – typically follow with displayOff()
+  void sleepOut();    // 0x11 (exit sleep)  – requires delay then displayOn()
+
   protected:
 
     config_detail_t _config_detail;

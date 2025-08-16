@@ -103,6 +103,14 @@ namespace lgfx
     bool init(void) override;
     void release(void) override;
 
+  // Runtime timing reconfiguration (porches / pulse widths / freq).
+  // NOTE: Does not reallocate framebuffer. Safe to call between frames.
+  bool reconfigureTimings(uint32_t freq_write,
+              int hfp, int hsw, int hbp,
+              int vfp, int vsw, int vbp);
+
+  // (VSYNC statistics removed – reverted to pre-jitter state)
+
     void beginTransaction(void) override {}
     void endTransaction(void) override {}
     void wait(void) override {}

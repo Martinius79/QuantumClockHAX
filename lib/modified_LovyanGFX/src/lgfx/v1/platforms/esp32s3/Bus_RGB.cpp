@@ -52,6 +52,8 @@ namespace lgfx
 
   static __attribute__ ((always_inline)) inline volatile uint32_t* reg(uint32_t addr) { return (volatile uint32_t *)ETS_UNCACHED_ADDR(addr); }
 
+  // (VSYNC statistics removed)
+
   static lcd_cam_dev_t* getDev(int port)
   {
     return &LCD_CAM;
@@ -62,6 +64,73 @@ namespace lgfx
     _cfg = cfg;
   }
 
+  bool Bus_RGB::reconfigureTimings(uint32_t freq_write,
+                                   int hfp, int hsw, int hbp,
+                                   int vfp, int vsw, int vbp)
+  {
+    // Basic sanity (avoid zeros that break -1 operations later)
+    if (hsw < 1) hsw = 1; if (vsw < 1) vsw = 1;
+    if (hfp < 1) hfp = 1; if (vfp < 1) vfp = 1;
+    if (hbp < 1) hbp = 1; if (vbp < 1) vbp = 1;
+    _cfg.freq_write = freq_write;
+    _cfg.hsync_front_porch = hfp;
+    _cfg.hsync_pulse_width = hsw;
+    _cfg.hsync_back_porch  = hbp;
+    _cfg.vsync_front_porch = vfp;
+    _cfg.vsync_pulse_width = vsw;
+    _cfg.vsync_back_porch  = vbp;
+
+    auto dev = getDev(_cfg.port);
+
+    // Recompute clock dividers
+    uint32_t div_a, div_b, div_n, clkcnt;
+    calcClockDiv(&div_a, &div_b, &div_n, &clkcnt, 240*1000*1000, std::min<uint32_t>(_cfg.freq_write, 40000000u));
+    typeof(dev->lcd_clock) lcd_clock;
+    lcd_clock.lcd_clkcnt_n = std::max<uint32_t>(1u, clkcnt - 1);
+    lcd_clock.lcd_clk_equ_sysclk = (clkcnt == 1);
+    lcd_clock.lcd_ck_idle_edge = false;
+    lcd_clock.lcd_ck_out_edge = _cfg.pclk_idle_high;
+    lcd_clock.lcd_clkm_div_num = div_n;
+    lcd_clock.lcd_clkm_div_b = div_b;
+    lcd_clock.lcd_clkm_div_a = div_a;
+    lcd_clock.lcd_clk_sel = 2;
+    lcd_clock.clk_en = true;
+    dev->lcd_clock.val = lcd_clock.val;
+
+    uint32_t active_width = _cfg.panel->width();
+    uint32_t active_height = _cfg.panel->height();
+
+    typeof(dev->lcd_ctrl) lcd_ctrl;
+    lcd_ctrl.val = dev->lcd_ctrl.val; // start from existing to keep unrelated bits
+    lcd_ctrl.lcd_hb_front = hbp + hsw - 1;
+    lcd_ctrl.lcd_va_height = active_height - 1;
+    lcd_ctrl.lcd_vt_height = vsw + vbp + active_height + vfp - 1;
+    lcd_ctrl.lcd_rgb_mode_en = true;
+    dev->lcd_ctrl.val = lcd_ctrl.val;
+
+    typeof(dev->lcd_ctrl1) lcd_ctrl1;
+    lcd_ctrl1.val = dev->lcd_ctrl1.val;
+    lcd_ctrl1.lcd_vb_front = vbp + vsw - 1;
+    lcd_ctrl1.lcd_ha_width = active_width - 1;
+    lcd_ctrl1.lcd_ht_width = hsw + hbp + active_width + hfp - 1;
+    dev->lcd_ctrl1.val = lcd_ctrl1.val;
+
+    typeof(dev->lcd_ctrl2) lcd_ctrl2;
+    lcd_ctrl2.val = dev->lcd_ctrl2.val;
+    lcd_ctrl2.lcd_vsync_width = vsw - 1;
+    lcd_ctrl2.lcd_vsync_idle_pol = _cfg.vsync_polarity;
+    lcd_ctrl2.lcd_hs_blank_en = true;
+    lcd_ctrl2.lcd_hsync_width = hsw - 1;
+    lcd_ctrl2.lcd_hsync_idle_pol = _cfg.hsync_polarity;
+    lcd_ctrl2.lcd_de_idle_pol = _cfg.de_idle_high;
+    dev->lcd_ctrl2.val = lcd_ctrl2.val;
+
+    // Force update/start bits
+    dev->lcd_user.lcd_update = 1;
+    dev->lcd_user.lcd_start = 1;
+    return true;
+  }
+
 
   IRAM_ATTR void Bus_RGB::lcd_default_isr_handler(void *args)
   {
@@ -70,7 +139,7 @@ namespace lgfx
 
     uint32_t intr_status = dev->lc_dma_int_st.val & 0x03;
     dev->lc_dma_int_clr.val = intr_status;
-    if (intr_status & LCD_LL_EVENT_VSYNC_END) {
+  if (intr_status & LCD_LL_EVENT_VSYNC_END) {
       GDMA.channel[me->_dma_ch].out.conf0.out_rst = 1;
       GDMA.channel[me->_dma_ch].out.conf0.out_rst = 0;
       GDMA.channel[me->_dma_ch].out.link.addr = (uintptr_t)&(me->_dmadesc_restart);
@@ -92,6 +161,8 @@ namespace lgfx
         // }
     }
   }
+
+  // getVSyncStats / resetVSyncStats removed
 
   static void _gpio_pin_sig(uint32_t pin, uint32_t sig)
   {
