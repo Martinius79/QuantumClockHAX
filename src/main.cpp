@@ -22,7 +22,7 @@ static const int VSW_LIST[] = { LCD_VSYNC_PULSE_WIDTH }; // vsync pulse variants
 static const int VBP_LIST[] = { LCD_VSYNC_BACK_PORCH  }; // vertical back porch sweep
 
 // Pixel clock candidates (Hz)
-static const uint32_t PCLK_LIST[] = { 12000000 };
+static const uint32_t PCLK_LIST[] = { 24800000 };
 // Delay between reconfigurations (ms)
 static const uint32_t AUTOSCAN_INTERVAL_MS = 100; // allow visual inspection
 
@@ -340,28 +340,28 @@ void loop() {
   // delay(3000);
 
   // --- Test for "full" colors (only one color channel full, rest 0) ---
-  // struct {
-  //   const char* name;
-  //   uint16_t color;
-  // } color_tests[] = {
-  //   {"Full Red (0xF800)", 0xF800},
-  //   {"Full Green (0x07E0)", 0x07E0},
-  //   {"Full Blue (0x001F)", 0x001F},
-  //   {"White (0xFFFF)", 0xFFFF},
-  //   {"Black (0x0000)", 0x0000},
-  //   {"Yellow (0xFFE0)", 0xFFE0},
-  //   {"Cyan (0x07FF)", 0x07FF},
-  //   {"Magenta (0xF81F)", 0xF81F},
-  // };
-  // for (auto& t : color_tests) {
-  //   Serial.print("Fill with color: ");
-  //   Serial.print(t.name);
-  //   Serial.print(" (0x");
-  //   Serial.print(t.color, HEX);
-  //   Serial.println(")");
-  //   lcd.fillScreen(t.color);
-  //   delay(2000);
-  // }
+  struct {
+    const char* name;
+    uint16_t color;
+  } color_tests[] = {
+    {"Full Red (0xF800)", 0xF800},
+    {"Full Green (0x07E0)", 0x07E0},
+    {"Full Blue (0x001F)", 0x001F},
+    {"White (0xFFFF)", 0xFFFF},
+    {"Black (0x0000)", 0x0000},
+    {"Yellow (0xFFE0)", 0xFFE0},
+    {"Cyan (0x07FF)", 0x07FF},
+    {"Magenta (0xF81F)", 0xF81F},
+  };
+  for (auto& t : color_tests) {
+    Serial.print("Fill with color: ");
+    Serial.print(t.name);
+    Serial.print(" (0x");
+    Serial.print(t.color, HEX);
+    Serial.println(")");
+    lcd.fillScreen(t.color);
+    delay(2000);
+  }
   // Serial.println("Color test completed.");
   // delay(3000);
 

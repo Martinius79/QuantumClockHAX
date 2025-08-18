@@ -73,7 +73,7 @@
 #endif
 
 #if USE_DATASHEET_RESOLUTION
-  #define LCD_HRES        480  // Active width (columns)
+  #define LCD_HRES        360  // Active width (columns)
   #define LCD_VRES        960  // Active height (rows)
   // #define LCD_HRES_PHYS   450 // -> different
   #define LCD_HRES_PHYS   360 // -> 
@@ -99,11 +99,12 @@
 
 #define LCD_HSYNC_FRONT_PORCH 20
 #define LCD_HSYNC_PULSE_WIDTH 8
-#define LCD_HSYNC_BACK_PORCH 20
+#define LCD_HSYNC_BACK_PORCH  20
 
 #define LCD_VSYNC_FRONT_PORCH 32
 #define LCD_VSYNC_PULSE_WIDTH 2
-#define LCD_VSYNC_BACK_PORCH 20
+#define LCD_VSYNC_BACK_PORCH  20
+
 
 
 // Red data pins (5 bits for RGB565, derived from R3-R7 of RGB888)
@@ -143,11 +144,11 @@
 
 
 // Control pins (common parallel RGB signals)
-#define LCD_PCLK  GPIO_NUM_6 // FPC Pin 30 (ESP32 - GPIO17 - pin 23) - Pixel clock
-#define LCD_RESET GPIO_NUM_7 // FPC Pin 31 (ESP32 - GPIO46 - pin 52) - Display reset
-#define LCD_HSYNC GPIO_NUM_8 // FPC Pin 32 (ESP32 - GPIO21 - pin 27) - Horizontal sync
-#define LCD_VSYNC GPIO_NUM_15 // FPC Pin 33 (ESP32 - SPICLK_P - pin 36) - Vertical sync
-#define LCD_DEN   GPIO_NUM_16 // FPC Pin 34 (ESP32 - GPIO18 - pin 24) - Data Enable
+#define LCD_PCLK  GPIO_NUM_6 // FPC Pin 30 (ESP32 - GPIO) - Pixel clock
+#define LCD_RESET GPIO_NUM_7 // FPC Pin 31 (ESP32 - GPIO) - Display reset
+#define LCD_HSYNC GPIO_NUM_8 // FPC Pin 32 (ESP32 - GPIO) - Horizontal sync
+#define LCD_VSYNC GPIO_NUM_15 // FPC Pin 33 (ESP32 - GPIO - Vertical sync
+#define LCD_DEN   GPIO_NUM_16 // FPC Pin 34 (ESP32 - GPIO) - Data Enable
 
 // Serial control interface (for display controller configuration, GC9503CV)
 // Using Three-Wire SDI (Serial Data Interface) with Chip Select, Serial Clock, and Serial Data, no DE or MISO (Master In Slave Out) used in this configuration.
@@ -260,7 +261,7 @@ public:
   // and Vblank ≈ 8+20+10=38 => Vtotal=998
   // At 12 MHz => ~12,000,000 / (428*998) ≈ 28 fps.
   // Increase freq_write to ~24-26 MHz for ~55-60 fps once stable.
-  cfg.freq_write = 12000000; // conservative start
+  cfg.freq_write = 24800000;
 #else
   cfg.freq_write = 12000000; // ~12,0MHz -> works for legacy 960x420 test
       // cfg.freq_write = 13000000; // ~13MHz
